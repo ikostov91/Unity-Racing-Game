@@ -5,13 +5,38 @@ using UnityEngine.UI;
 
 public class VehicleController : MonoBehaviour
 {
+    [Header("Adjustable Parameters")]
     [SerializeField] private float _maxSteeringAngle = 35f;
     [SerializeField] private float _maxBrakingTorque = 4500f;
     [SerializeField] private float _handbrakeTorque = 10000f;
+    [SerializeField] [Range(0.001f, 1.0f)] private float _steerSpeed = 0.2f;
+    [SerializeField] private float _shiftUpTime = 1.0f;
+    [SerializeField] private float _shiftDownTime = 0.2f;
+    [SerializeField] [Range(0.5f, 600f)] private float _downforce = 1.0f;
+    [SerializeField] private float _hybridBoostTorque = 160f;
+    [SerializeField] private float _speedThreshold = 10f;
+
+    [Header("Hybrid boost")]
+    [SerializeField] private bool _enableHybridBoost = false;
+    [SerializeField] private float _hybridBoostDepletionRate = 20f;
+    [SerializeField] private float _hybridBoostRechargeRate = 20f;
+    [SerializeField] private float _hybridBoostRequiredAmount = 80f;
+
+    [Header("Gearbox mode")]
+    [SerializeField] private bool _isGearboxAutomatic = false;
+
+    [Header("UI elements")]
+    [SerializeField] private Text _engineRevsDisplay;
+    [SerializeField] private Slider _revCounterDisplay;
+    [SerializeField] private Text _gearDisplay;
+    [SerializeField] private Text _gearboxModeDisplay;
+    [SerializeField] private Text _torqueOutput;
+    [SerializeField] private Slider _boostAmount;
+    [SerializeField] private Image _boostSliderFill;
+    [SerializeField] private Text _boostLabel;
 
     private float _currentEngineRpm;
     private int _currentGear = 0;
-
     private int _throttleInput = 0;
     private int _brakeInput = 0;
     private int _clutchInput = 1;
@@ -24,42 +49,36 @@ public class VehicleController : MonoBehaviour
 
     [SerializeField] public AxleInfo[] _axleInfos;
 
-    [SerializeField] private Engine Engine;
+    [SerializeField] public Engine Engine;
     [SerializeField] private Gearbox Gearbox;
 
-    [SerializeField] private Text _engineRevsDisplay;
-    [SerializeField] private Slider _revCounterDisplay;
-    [SerializeField] private Text _gearDisplay;
-    [SerializeField] private Text _gearboxModeDisplay;
-
     [SerializeField] private Transform _centerOfMass;
-
-    [Range(0.5f, 600f)]
-    [SerializeField] private float _downforce = 1.0f;
 
     private float _currentEngineTorque = 0f;
     private float _currentTransmissionTorque = 0.0001f;
     private float _currentBackdriveTorque = 0f;
+    private float _currentSpeed = 0.0f;
+    private float _currentBoostAmount = 100f;
+
     private float _wheelInertia = 0.92f;
-
-    [Range(0.001f, 1.0f)]
-    [SerializeField] private float _steerSpeed = 0.2f;
-
-    [SerializeField] private float _shiftUpTime = 1.0f;
-    [SerializeField] private float _shiftDownTime = 0.2f;
-
-    [SerializeField] private float _speed = 0.0f;
-
     private const float radiansToRevs = 0.159155f;
 
     [SerializeField] AnimationCurve turnInputCurve = AnimationCurve.Linear(-1.0f, -1.0f, 1.0f, 1.0f);
 
-    [SerializeField] float _hybridBoostPower = 160f;
     private bool _isHybridBoostApplied = false;
+    private bool _isHybridBoostAvailable = true;
 
-    [SerializeField] private bool _isGearboxAutomatic = false;
+    // 1e8f == 100000000
 
-    // 1e8f == 100000000f
+    public float EngineTorque
+    {
+        get => this._currentEngineTorque;
+    }
+
+    public float EngineRpm
+    {
+        get => this._currentEngineRpm;
+    }
 
     void Start()
     {
@@ -80,6 +99,10 @@ public class VehicleController : MonoBehaviour
                 axle.RightWheel.motorTorque = this._currentTransmissionTorque;
             }
         }
+
+        this._boostAmount.gameObject.SetActive(this._enableHybridBoost);
+        this._boostSliderFill.gameObject.SetActive(this._enableHybridBoost);
+        this._boostLabel.gameObject.SetActive(this._enableHybridBoost);
     }
 
     void FixedUpdate()
@@ -90,8 +113,6 @@ public class VehicleController : MonoBehaviour
         this.ApplyHandbrake();
         this.AddDownforce();
         this.LockWheelsRotation();
-
-        this.ApplyHybridBoost();
     }
 
     void Update()
@@ -106,9 +127,10 @@ public class VehicleController : MonoBehaviour
         this.DetectWheelSlip();
         this.RevEngine();
         this.GetCurrentSpeed();
-
         this.UpdateUI();
         this.SwitchGearboxMode();
+        this.ApplyHybridBoost();
+        this.RechargeHybridBoost();
     }
 
     private void ThrottleInput()
@@ -203,7 +225,7 @@ public class VehicleController : MonoBehaviour
             }
             else if (!Input.GetKey(KeyCode.UpArrow) &&
                 this._currentEngineRpm < this.Engine.DownShiftRpm &&
-                this._speed > 1f &&
+                this._currentSpeed > 1f &&
                 this._currentGear > this.Gearbox.FirstGear)
             {
                 int nextGear = Mathf.Max(this._currentGear - 1, this.Gearbox.FirstGear);
@@ -215,20 +237,20 @@ public class VehicleController : MonoBehaviour
                 this.StartCoroutine(this.ShiftIntoNewGear(nextGear, this._shiftDownTime));
             }
             else if (Input.GetKeyDown(KeyCode.UpArrow) &&
-                this._speed < 1f &&
+                this._currentSpeed < 1f &&
                 this._currentGear == this.Gearbox.NeutralGear)
             {
                 int nextGear = this.Gearbox.FirstGear;
                 this.StartCoroutine(this.ShiftIntoNewGear(nextGear, this._shiftDownTime));
             }
             else if (Input.GetKeyDown(KeyCode.S) &&
-                this._speed <= 1f &&
+                this._currentSpeed <= 1f &&
                 (this._currentGear < this.Gearbox.FirstGear))
             {
                 int nextGear = this.Gearbox.FirstGear;
                 this.StartCoroutine(this.ShiftIntoNewGear(nextGear, this._shiftUpTime));
             }
-            else if (Input.GetKeyDown(KeyCode.X) && this._speed <= 1f)
+            else if (Input.GetKeyDown(KeyCode.X) && this._currentSpeed <= 1f)
             {
                 int nextGear = this.Gearbox.ReverseGear;
                 this.StartCoroutine(this.ShiftIntoNewGear(nextGear, this._shiftDownTime));
@@ -238,7 +260,7 @@ public class VehicleController : MonoBehaviour
 
     private bool CheckIfGearChangeIsPossible(int nextGear)
     {
-        if (this._currentGear > 0 && nextGear >= 1 && nextGear <= this.Gearbox.HighestGear && this._speed > 10f)
+        if (this._currentGear > 0 && nextGear >= 1 && nextGear <= this.Gearbox.HighestGear && this._currentSpeed > this._speedThreshold)
         {
             AxleInfo motorAxle = this._axleInfos.FirstOrDefault(x => x.Motor);
             float wheelRpm = (motorAxle.RightWheel.rpm + motorAxle.LeftWheel.rpm) / 2;
@@ -248,11 +270,11 @@ public class VehicleController : MonoBehaviour
                 return false;
             }
         }
-        else if (this._currentGear == -1 && nextGear >= 0 && this._speed > 10f)
+        else if (this._currentGear == -1 && nextGear >= 0 && this._currentSpeed > this._speedThreshold)
         {
             return false;
         }
-        else if (this._currentGear == 0 && nextGear == -1 && this._speed > 10f)
+        else if (this._currentGear == 0 && nextGear == -1 && this._currentSpeed > this._speedThreshold)
         {
             return false;
         }
@@ -293,10 +315,6 @@ public class VehicleController : MonoBehaviour
                 }
 
                 float totalTorque = thrustTorque + backdriveTorque;
-                if (this._isHybridBoostApplied)
-                {
-                    totalTorque += this._hybridBoostPower;
-                }
                 float maxWheelRpm = this.GetMaximumWheelRpmPossible();
 
                 if (axle.LeftWheel.rpm >= maxWheelRpm || axle.RightWheel.rpm >= maxWheelRpm)
@@ -414,6 +432,12 @@ public class VehicleController : MonoBehaviour
         this._currentEngineRpm = momentum / effInertia;
         this._currentEngineRpm = Mathf.Clamp(this._currentEngineRpm, this.Engine.MinimumRpm, this.Engine.MaximumRmp); 
         this._currentEngineTorque = GetEngineTorque() * this._throttleInput;
+
+        if (this._isHybridBoostApplied && this._isHybridBoostAvailable)
+        {
+            this._currentEngineTorque += this._hybridBoostTorque;
+        }
+
         this._currentTransmissionTorque =
             this._currentEngineTorque *
             currentGearRatio *
@@ -445,13 +469,34 @@ public class VehicleController : MonoBehaviour
 
     private void ApplyHybridBoost()
     {
-        if (Input.GetKey(KeyCode.Z))
+        if (this._enableHybridBoost)
         {
-            this._isHybridBoostApplied = true;
+            if (Input.GetKey(KeyCode.Z) && this._isHybridBoostAvailable && this._currentSpeed > this._speedThreshold)
+            {
+                this._isHybridBoostApplied = true;
+                this._currentBoostAmount -= Time.deltaTime * _hybridBoostDepletionRate;
+                if (this._currentBoostAmount <= 0)
+                {
+                    this._currentBoostAmount = 0;
+                    this._isHybridBoostAvailable = false;
+                }
+            }
+            else
+            {
+                this._isHybridBoostApplied = false;
+            }
         }
-        else
+    }
+
+    private void RechargeHybridBoost()
+    {
+        if (Input.GetKey(KeyCode.DownArrow) && this._currentSpeed > this._speedThreshold)
         {
-            this._isHybridBoostApplied = false;
+            this._currentBoostAmount += Time.deltaTime * this._hybridBoostRechargeRate;
+            if (this._currentBoostAmount >= this._hybridBoostRequiredAmount)
+            {
+                this._isHybridBoostAvailable = true;
+            }
         }
     }
 
@@ -474,12 +519,12 @@ public class VehicleController : MonoBehaviour
 
     private void AddDownforce()
     {
-        this._myRigidBody.AddForce(-transform.up * this._downforce * this._speed);
+        this._myRigidBody.AddForce(-transform.up * this._downforce * this._currentSpeed);
     }
 
     private void GetCurrentSpeed()
     {
-        this._speed = this._myRigidBody.velocity.magnitude * 3.6f;
+        this._currentSpeed = this._myRigidBody.velocity.magnitude * 3.6f;
     }
 
     private void AnimateWheels()
@@ -541,6 +586,19 @@ public class VehicleController : MonoBehaviour
         this._gearDisplay.text = $"Gear: {UpdateGearDisplay(this._currentGear)}";
 
         this._gearboxModeDisplay.text = this._isGearboxAutomatic ? Constants.GearboxConstants.GearboxAutoMode : Constants.GearboxConstants.GearboxManualMode;
+
+        this._torqueOutput.text = $"Torque Output: {Mathf.RoundToInt(this._currentEngineTorque)}";
+
+        var currentBoostAmount = Mathf.InverseLerp(0f, 100f, this._currentBoostAmount);
+        this._boostAmount.value = currentBoostAmount;
+        if (this._isHybridBoostAvailable)
+        {
+            this._boostSliderFill.color = Color.red;
+        }
+        else
+        {
+            this._boostSliderFill.color = Color.grey;
+        }
     }
 
     private void SwitchGearboxMode()
