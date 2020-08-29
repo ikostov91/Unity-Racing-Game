@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class AxleInfo
 {
     public WheelCollider LeftWheel;
     public WheelCollider RightWheel;
-    public bool Motor; // is this wheel attached to motor?
-    public bool Steering; // does this wheel apply steer angle?
+    public bool Motor;
+    public bool Steering;
     public float BrakeBias;
 }

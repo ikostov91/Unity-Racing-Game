@@ -2,8 +2,7 @@
 
 public class Exhaust : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _exhaustLeft;
-    [SerializeField] private ParticleSystem _exhaustRight;
+    [SerializeField] private ParticleSystem _exhaust;
     [SerializeField] private float _exhaustRateMin = 100;
     [SerializeField] private float _exhaustRateMax = 500;
 
@@ -31,9 +30,7 @@ public class Exhaust : MonoBehaviour
             );
         float interpolatedEmissionRate = Mathf.Lerp(this._exhaustRateMin, this._exhaustRateMax, interpolatedRpm);
 
-        var emissionLeft = this._exhaustLeft.emission;
-        var emissionRight = this._exhaustRight.emission;
-        emissionLeft.rateOverTime = interpolatedEmissionRate;
-        emissionRight.rateOverTime = interpolatedEmissionRate;
+        var emission = this._exhaust.emission;
+        emission.rateOverTime = interpolatedEmissionRate;
     }
 }

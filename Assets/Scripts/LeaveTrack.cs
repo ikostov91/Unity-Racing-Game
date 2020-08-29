@@ -1,16 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class OffTrack : MonoBehaviour
+public class LeaveTrack : MonoBehaviour
 {
-
     public void OnCollisionEnter(Collision otherCollider)
     {
         VehicleController playerVehicle = otherCollider.gameObject.GetComponent<VehicleController>();
         if (playerVehicle)
         {
-            Debug.Log("LAP INVALIDATED");
+            FindObjectOfType<LapTimer>().InvalidateLap();
         }
     }
 }
