@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Constants;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,10 +14,16 @@ public class LapTimer : MonoBehaviour
     private bool _isLapValid = true;
 
     [SerializeField] private Text _lapTimeDisplay;
+    [SerializeField] private Text _bestLapTimeDisplay;
 
     private void Start()
     {
-        this._lapTimes = new List<float>();    
+        this._lapTimes = new List<float>();
+
+        if (this._lapTimes.Count == 0)
+        {
+            this._bestLapTimeDisplay.text = "Best: N/A";
+        }
     }
 
     void Update()
@@ -47,17 +55,21 @@ public class LapTimer : MonoBehaviour
         {
             lapTimeText = "Invalid";
         }
-        this._lapTimeDisplay.text = $"Lap: {lapTimeText}";
+        this._lapTimeDisplay.text = $"Time: {lapTimeText}";
     }
 
     private void OnTriggerEnter(Collider otherCollider)
     {
-        VehicleController _vehicle = otherCollider.gameObject.GetComponentInParent<VehicleController>();
-        if (_vehicle != null)
+        // VehicleController _vehicle = otherCollider.gameObject.GetComponentInParent<VehicleController>();
+        
+        if (otherCollider.gameObject.tag == TagConstants.PlayerVehicleTag)
         {
-            if (this._isLapValid)
+            if (this._isLapValid && this._timerStarted)
             {
                 this._lapTimes.Add(this._elapsedTime);
+
+                float bestLapTime = this._lapTimes.Max();
+                this._bestLapTimeDisplay.text = $"Best: {Math.Round(bestLapTime, 3)}";
             }
             
             this._timerStarted = true;

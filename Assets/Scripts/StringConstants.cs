@@ -7,5 +7,10 @@
         public const string GearboxReverseGear = "R";
         public const string GearboxNeutralGear = "N";
     }
+
+    public static class TagConstants
+    {
+        public const string PlayerVehicleTag = "PlayerVehicle";
+    }
 }
 

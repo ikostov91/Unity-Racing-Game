@@ -13,6 +13,7 @@ public class UIUpdater : MonoBehaviour
     [SerializeField] private Slider _boostAmount;
     [SerializeField] private Image _boostSliderFill;
     [SerializeField] private Text _boostLabel;
+    [SerializeField] private Text _speedDisplay;
 
     void Start()
     {
@@ -23,12 +24,18 @@ public class UIUpdater : MonoBehaviour
 
     void Update()
     {
+        this.UpdateSpeedDisplay();
         this.UpdateRevCounter();
         this.UpdateRevsDisplay();
         this.UpdateCurrentGear();
         this.UpdateGearboxMode();
         this.UpdateTorqueOutput();
         this.UpdateHybridBoostGauge();
+    }
+
+    private void UpdateSpeedDisplay()
+    {
+        this._speedDisplay.text = Mathf.RoundToInt(this._vehicleController.Speed).ToString("D3");
     }
 
     private void SetHybridBoostGaugeState()
@@ -52,7 +59,7 @@ public class UIUpdater : MonoBehaviour
 
     private void UpdateRevsDisplay()
     {
-        this._engineRevsDisplay.text = $"Revs: {Mathf.RoundToInt(this._vehicleController.EngineRpm)}";
+        this._engineRevsDisplay.text = Mathf.RoundToInt(this._vehicleController.EngineRpm).ToString();
 
         if (this._vehicleController.EngineRpm > this._vehicleController.Engine.RedLine)
         {
@@ -81,7 +88,7 @@ public class UIUpdater : MonoBehaviour
             return currentGear.ToString();
         }
 
-        this._gearDisplay.text = $"Gear: {GetGearText(this._vehicleController.CurrentGear)}";
+        this._gearDisplay.text = $"{GetGearText(this._vehicleController.CurrentGear)}";
     }
 
     private void UpdateGearboxMode()

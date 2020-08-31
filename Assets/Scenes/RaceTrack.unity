@@ -2337,6 +2337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lapTimeDisplay: {fileID: 1074593220}
+  _bestLapTimeDisplay: {fileID: 2095395037}
 --- !u!1001 &603172479
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7988,6 +7989,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2072941082}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2095395037 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2095395037, guid: 729212239da3ae7458ec89da8ef1a510,
+    type: 3}
+  m_PrefabInstance: {fileID: 1557564894}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2096235506
 PrefabInstance:
   m_ObjectHideFlags: 0

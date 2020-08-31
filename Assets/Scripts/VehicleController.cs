@@ -97,6 +97,11 @@ public class VehicleController : MonoBehaviour
         get => this._enableHybridBoost;
     }
 
+    public float Speed
+    {
+        get => this._currentSpeed;
+    }
+
     void Start()
     {
         this._currentEngineRpm = this.Engine.MinimumRpm;
