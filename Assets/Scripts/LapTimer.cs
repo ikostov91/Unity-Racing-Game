@@ -15,6 +15,7 @@ public class LapTimer : MonoBehaviour
 
     [SerializeField] private Text _lapTimeDisplay;
     [SerializeField] private Text _bestLapTimeDisplay;
+    [SerializeField] private Text _lastLapTimeDisplay;
 
     private void Start()
     {
@@ -23,6 +24,7 @@ public class LapTimer : MonoBehaviour
         if (this._lapTimes.Count == 0)
         {
             this._bestLapTimeDisplay.text = "Best: N/A";
+            this._lastLapTimeDisplay.text = "Last: N/A";
         }
     }
 
@@ -60,15 +62,15 @@ public class LapTimer : MonoBehaviour
 
     private void OnTriggerEnter(Collider otherCollider)
     {
-        // VehicleController _vehicle = otherCollider.gameObject.GetComponentInParent<VehicleController>();
-        
-        if (otherCollider.gameObject.tag == TagConstants.PlayerVehicleTag)
+        if (otherCollider.gameObject.CompareTag(TagConstants.PlayerVehicleTag))
         {
             if (this._isLapValid && this._timerStarted)
             {
                 this._lapTimes.Add(this._elapsedTime);
 
-                float bestLapTime = this._lapTimes.Max();
+                this._lastLapTimeDisplay.text = $"Last: {Math.Round(this._elapsedTime, 3)}";
+
+                float bestLapTime = this._lapTimes.Min();
                 this._bestLapTimeDisplay.text = $"Best: {Math.Round(bestLapTime, 3)}";
             }
             
