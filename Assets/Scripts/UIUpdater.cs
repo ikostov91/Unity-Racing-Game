@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class UIUpdater : MonoBehaviour
 {
     private VehicleController _vehicleController;
+    private Fuel _fuel;
 
     [SerializeField] private Text _engineRevsDisplay;
     [SerializeField] private Slider _revCounterDisplay;
@@ -14,10 +16,13 @@ public class UIUpdater : MonoBehaviour
     [SerializeField] private Image _boostSliderFill;
     [SerializeField] private Text _boostLabel;
     [SerializeField] private Text _speedDisplay;
+    [SerializeField] private Text _wheelRpmDisplay;
+    [SerializeField] private Text _fuelDisplay;
 
     void Start()
     {
         this._vehicleController = FindObjectOfType<VehicleController>();
+        this._fuel = FindObjectOfType<Fuel>();
 
         this.SetHybridBoostGaugeState();
     }
@@ -31,6 +36,7 @@ public class UIUpdater : MonoBehaviour
         this.UpdateGearboxMode();
         this.UpdateTorqueOutput();
         this.UpdateHybridBoostGauge();
+        this.UpdateFuelDisplay();
     }
 
     private void UpdateSpeedDisplay()
@@ -113,5 +119,10 @@ public class UIUpdater : MonoBehaviour
         {
             this._boostSliderFill.color = Color.grey;
         }
+    }
+
+    private void UpdateFuelDisplay()
+    {
+        this._fuelDisplay.text = this._fuel.CurrentFuel.ToString("F1");
     }
 }

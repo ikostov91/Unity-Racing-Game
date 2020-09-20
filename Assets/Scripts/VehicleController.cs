@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class VehicleController : MonoBehaviour
     [SerializeField] private bool _isGearboxAutomatic = false;
 
     private PlayerInput _playerInput;
+    private Fuel _fuel;
 
     private float _throttleInput = 0f;
     private float _brakeInput = 0f;
@@ -43,8 +45,8 @@ public class VehicleController : MonoBehaviour
 
     [SerializeField] public AxleInfo[] _axleInfos;
 
-    [SerializeField] public Engine Engine;
-    [SerializeField] private Gearbox Gearbox;
+    public IEngine Engine;
+    public IGearbox Gearbox;
 
     [SerializeField] private Transform _centerOfMass;
 
@@ -57,76 +59,53 @@ public class VehicleController : MonoBehaviour
     private float _currentBoostAmount = 100f;
     private const float _maxBoostAmount = 100f;
 
-    private float _wheelInertia = 0.92f;
-    private const float radiansToRevs = 0.159155f;
-
-    //[SerializeField] AnimationCurve turnInputCurve = AnimationCurve.Linear(-1.0f, -1.0f, 1.0f, 1.0f);
-
     private bool _isHybridBoostApplied = false;
     private bool _isHybridBoostAvailable = true;
 
     // 1e8f == 100000000
 
-    public float EngineTorque
-    {
-        get => this._currentEngineTorque;
-    }
+    // Constant parameters
+    private float _wheelInertia = 0.92f;
+    private const float radiansToRevs = 0.159155f;
+    [SerializeField] private float _defaultSidewaysFriction = 1.4f;
+    [SerializeField] private float _defaultForwardFriction = 1.4f;
+    [SerializeField] private float _lockedBrakesSidewaysFriction = 0.8f;
+    [SerializeField] private float _lockedHandBrakeSidewaysFriction = 0.8f;
+    [SerializeField] private float _offTrackFriction = 0.3f;
 
-    public float EngineRpm
+    public float EngineTorque => this._currentEngineTorque;
+    public float EngineRpm => this._currentEngineRpm;
+    public int CurrentGear => this._currentGear;
+    public bool AutomaticGearbox => this._isGearboxAutomatic;
+    public float BoostAmount => this._currentBoostAmount;
+    public bool HybridBoostAvailable => this._isHybridBoostAvailable;
+    public bool HybridBoostEnabled => this._enableHybridBoost;
+    public float Speed => this._currentSpeed;
+    public bool CutTrottle
     {
-        get => this._currentEngineRpm;
-    }
-
-    public int CurrentGear
-    {
-        get => this._currentGear;
-    }
-
-    public bool AutomaticGearbox
-    {
-        get => this._isGearboxAutomatic;
-    }
-
-    public float BoostAmount
-    {
-        get => this._currentBoostAmount;
-    }
-
-    public bool HybridBoostAvailable
-    {
-        get => this._isHybridBoostAvailable;
-    }
-
-    public bool HybridBoostEnabled
-    {
-        get => this._enableHybridBoost;
-    }
-
-    public float Speed
-    {
-        get => this._currentSpeed;
+        get => this._cutThrottle;
+        set => this._cutThrottle = value;
     }
 
     void Start()
     {
-        this._playerInput = GetComponent<PlayerInput>();
-
-        this._currentEngineRpm = this.Engine.MinimumRpm;
-
         this._myRigidBody = GetComponent<Rigidbody>();
+        this._playerInput = GetComponent<PlayerInput>();
+        this._fuel = GetComponent<Fuel>();
+        this.Engine = GetComponent<IEngine>();
+        this.Gearbox = GetComponent<IGearbox>();
+
+        this._currentEngineRpm = this.Engine.MinimumRpm;      
 
         if (this._myRigidBody != null && this._centerOfMass != null)
         {
             this._myRigidBody.centerOfMass = this._centerOfMass.localPosition;
         }
 
-        foreach (var axle in this._axleInfos)
+        foreach (AxleInfo axle in this._axleInfos.Where(x => x.Motor))
         {
-            if (axle.Motor)
-            {
-                axle.LeftWheel.motorTorque = this._currentTransmissionTorque;
-                axle.RightWheel.motorTorque = this._currentTransmissionTorque;
-            }
+            axle.LeftWheel.motorTorque = this._currentTransmissionTorque;
+            axle.RightWheel.motorTorque = this._currentTransmissionTorque;
         }
     }
 
@@ -137,21 +116,15 @@ public class VehicleController : MonoBehaviour
         this.ApplySteeringToWheels();
         this.ApplyHandbrake();
         this.AddDownforce();
+        this.AdjustWheelFriction();
+        this.DetectWheelSlip();
     }
 
     void Update()
     {
         this.ProcessInput();
-        //this.ThrottleInput();
-        //this.BrakesInput();
-        //this.SteeringInput();
-        //this.ClutchInput();
-        //this.GearChangeInput();
-        //this.HandbrakeInput();
-
         this.ChangeGears();
         this.AnimateWheels();
-        this.DetectWheelSlip();
         this.RevEngine();
         this.GetCurrentSpeed();
         this.SwitchGearboxMode();
@@ -198,6 +171,7 @@ public class VehicleController : MonoBehaviour
         }
         else
         {
+            // TODO Change input and rework
             if (Input.GetKey(KeyCode.UpArrow) && this._currentEngineRpm >= this.Engine.UpShiftRpm && this._currentGear >= this.Gearbox.FirstGear)
             {
                 int nextGear = Mathf.Min(this._currentGear + 1, this.Gearbox.HighestGear);
@@ -287,35 +261,45 @@ public class VehicleController : MonoBehaviour
         float backdriveTorque = 0f;
         float engineBrakeTorque = 0f;
 
-        foreach (var axle in this._axleInfos)
+        foreach (AxleInfo axle in this._axleInfos.Where(x => x.Motor))
         {
-            if (axle.Motor)
+            if (this._currentGear != 0)
             {
-                if (this._currentGear != 0)
-                {
-                    float currentGearRation = this._currentGear >= 0 ? this.Gearbox.ForwardGearRatios[this._currentGear] : this.Gearbox.ReverseRatio;
-                    thrustTorque = this._currentTransmissionTorque;
-                    backdriveTorque = Mathf.Clamp(this._currentBackdriveTorque, 0, 1e8f) / currentGearRation;
-                    engineBrakeTorque = Mathf.Clamp(this._currentBackdriveTorque, -1e8f, 0f) / currentGearRation;
-                }
+                float currentGearRation = this._currentGear >= 0 ? this.Gearbox.ForwardGearRatios[this._currentGear] : this.Gearbox.ReverseRatio;
+                thrustTorque = this._currentTransmissionTorque;
+                backdriveTorque = Mathf.Clamp(this._currentBackdriveTorque, 0, 1e8f) / currentGearRation;
+                engineBrakeTorque = Mathf.Clamp(this._currentBackdriveTorque, -1e8f, 0f) / currentGearRation;
+            }
 
-                float totalTorque = thrustTorque + backdriveTorque;
-                float maxWheelRpm = this.GetMaximumWheelRpmPossible();
+            float totalTorque = thrustTorque + backdriveTorque;
+            float maxWheelRpm = this.GetMaximumWheelRpmPossible();
 
-                if (axle.LeftWheel.rpm >= maxWheelRpm || axle.RightWheel.rpm >= maxWheelRpm)
+            if (axle.GetAxleWheels().Any(x => x.rpm >= maxWheelRpm))
+            {
+                foreach (WheelCollider wheel in axle.GetAxleWheels())
                 {
-                    axle.LeftWheel.motorTorque = 0.0001f;
-                    axle.RightWheel.motorTorque = 0.0001f;
+                    wheel.motorTorque = 0.0001f;
                 }
-                else
+            }
+            else if (this._fuel.CurrentFuel <= 0f)
+            {
+                foreach (WheelCollider wheel in axle.GetAxleWheels())
                 {
-                    int torqueDirection = this._currentGear >= 0 ? 1 : -1;
-                    axle.LeftWheel.motorTorque = totalTorque * torqueDirection;
-                    axle.RightWheel.motorTorque = totalTorque * torqueDirection;
+                    wheel.motorTorque = 100f;
                 }
+            }
+            else
+            {
+                int torqueDirection = this._currentGear >= 0 ? 1 : -1;
+                foreach (WheelCollider wheel in axle.GetAxleWheels())
+                {
+                    wheel.motorTorque = totalTorque * torqueDirection * axle.TorqueBias;
+                }
+            }
 
-                axle.LeftWheel.brakeTorque += Mathf.Abs(engineBrakeTorque);
-                axle.RightWheel.brakeTorque += Mathf.Abs(engineBrakeTorque);
+            foreach (WheelCollider wheel in axle.GetAxleWheels())
+            {
+                wheel.brakeTorque += Mathf.Abs(engineBrakeTorque);
             }
         }
     }
@@ -329,21 +313,22 @@ public class VehicleController : MonoBehaviour
 
     private void ApplyBrakeTorqueToWheels()
     {
-        foreach (var axle in this._axleInfos)
+        foreach (AxleInfo axle in this._axleInfos)
         {
-            axle.LeftWheel.brakeTorque = this._maxBrakingTorque * axle.BrakeBias * this._brakeInput;
-            axle.RightWheel.brakeTorque = this._maxBrakingTorque * axle.BrakeBias * this._brakeInput;
+            foreach (WheelCollider wheel in axle.GetAxleWheels())
+            {
+                wheel.brakeTorque = this._maxBrakingTorque * axle.BrakeBias * this._brakeInput;
+            }
         }
     }
 
     private void ApplySteeringToWheels()
     {
-        foreach (var axle in this._axleInfos)
+        foreach (AxleInfo axle in this._axleInfos.Where(x => x.Steering))
         {
-            if (axle.Steering)
+            foreach (WheelCollider wheel in axle.GetAxleWheels())
             {
-                axle.LeftWheel.steerAngle = Mathf.Lerp(axle.LeftWheel.steerAngle, this._steerInput, this._steerSpeed);
-                axle.RightWheel.steerAngle = Mathf.Lerp(axle.LeftWheel.steerAngle, this._steerInput, this._steerSpeed);
+                wheel.steerAngle = Mathf.Lerp(axle.LeftWheel.steerAngle, this._steerInput, this._steerSpeed);
             }
         }
     }
@@ -352,17 +337,17 @@ public class VehicleController : MonoBehaviour
     {
         if (this._handBrakeInput)
         {
-            this._axleInfos.Last().LeftWheel.motorTorque = 0.0001f;
-            this._axleInfos.Last().LeftWheel.brakeTorque = this._handbrakeTorque;
-
-            this._axleInfos.Last().RightWheel.motorTorque = 0.0001f;
-            this._axleInfos.Last().RightWheel.brakeTorque = this._handbrakeTorque;
+            foreach (WheelCollider wheel in this._axleInfos.Where(x => x.HandBrake).FirstOrDefault().GetAxleWheels())
+            {
+                wheel.motorTorque = 0.0001f;
+                wheel.brakeTorque = this._handbrakeTorque;
+            }
         }
     }
 
     private void RevEngine()
     {
-        if (this._currentEngineRpm >= this.Engine.MaximumRmp)
+        if (this._currentEngineRpm >= this.Engine.MaximumRmp || this._cutThrottle)
         {
             this._throttleInput = 0f;
         }
@@ -375,33 +360,28 @@ public class VehicleController : MonoBehaviour
         {
             float wheelRPM = 0f;
             float newRpm = 0f;
-            WheelHit leftHit, rightHit;
+            WheelHit hit;
 
-            foreach (var axle in this._axleInfos)
+            foreach (AxleInfo axle in this._axleInfos.Where(x => x.Motor))
             {
-                if (axle.Motor)
+                float totalWheelRpm = 0f;
+
+                foreach (WheelCollider wheel in axle.GetAxleWheels())
                 {
-                    if (axle.LeftWheel.GetGroundHit(out leftHit))
+                    if (wheel.GetGroundHit(out hit))
                     {
-                        wheelRPM = GetWheelGroundRPM(axle.LeftWheel) * currentGearRatio * this.Gearbox.FinalDriveRatio;
+                        wheelRPM = GetWheelGroundRPM(wheel) * currentGearRatio * this.Gearbox.FinalDriveRatio;
                         newRpm = this._clutchInput * this._currentEngineRpm + (1 - this._clutchInput) * wheelRPM;
-                        var wheelTorque = ((this._currentEngineRpm - newRpm) * this._wheelInertia);
+                        var wheelTorque = (this._currentEngineRpm - newRpm) * this._wheelInertia;
                         this._currentBackdriveTorque += wheelTorque;
                     }
-
-                    if (axle.RightWheel.GetGroundHit(out rightHit))
-                    {
-                        wheelRPM = GetWheelGroundRPM(axle.RightWheel) * currentGearRatio * this.Gearbox.FinalDriveRatio;
-                        newRpm = this._clutchInput * this._currentEngineRpm + (1 - this._clutchInput) * wheelRPM;
-                        var wheelTorque = ((this._currentEngineRpm - newRpm) * this._wheelInertia);
-                        this._currentBackdriveTorque += wheelTorque;
-                    }
-
-                    var newWheelRpm = (axle.LeftWheel.rpm + axle.RightWheel.rpm) / 2;
-
-                    float calculatedRpm = newWheelRpm * currentGearRatio * this.Gearbox.FinalDriveRatio;
-                    this._currentEngineRpm = Mathf.Clamp(calculatedRpm, this.Engine.MinimumRpm, this.Engine.MaximumRmp);
+                    totalWheelRpm += wheel.rpm;
                 }
+
+                var newWheelRpm = totalWheelRpm / axle.GetAxleWheels().Length;
+
+                float calculatedRpm = newWheelRpm * currentGearRatio * this.Gearbox.FinalDriveRatio;
+                this._currentEngineRpm = Mathf.Clamp(calculatedRpm, this.Engine.MinimumRpm, this.Engine.MaximumRmp);
             }
         }
 
@@ -459,8 +439,10 @@ public class VehicleController : MonoBehaviour
             List<WheelCollider> wheels = new List<WheelCollider>();
             foreach (AxleInfo axle in this._axleInfos)
             {
-                wheels.Add(axle.LeftWheel);
-                wheels.Add(axle.RightWheel);
+                foreach (WheelCollider wheel in axle.GetAxleWheels())
+                {
+                    wheels.Add(wheel);
+                }
             }
 
             if (wheels.Any(x => x.rpm > 1f) && this._currentSpeed > this._speedThreshold)
@@ -471,7 +453,7 @@ public class VehicleController : MonoBehaviour
                 {
                     this._isHybridBoostAvailable = true;
                 }
-            }
+            }         
         }
     }
 
@@ -539,28 +521,55 @@ public class VehicleController : MonoBehaviour
 
     private void DetectWheelSlip()
     {
-        foreach (var axle in this._axleInfos)
+        foreach (AxleInfo axle in this._axleInfos.Where(x => x.Motor))
         {
-            if (axle.Motor)
+            WheelHit hitLeftWheel;
+            WheelHit hitRightWheel;
+
+            if (axle.LeftWheel.GetGroundHit(out hitLeftWheel))
             {
-                WheelHit hitLeftWheel;
-                WheelHit hitRightWheel;
-
-                if (axle.LeftWheel.GetGroundHit(out hitLeftWheel))
+                if (hitLeftWheel.forwardSlip < 0)
                 {
-                    // Debug.Log(hitLeftWheel.forwardSlip);
-                    if (hitLeftWheel.forwardSlip < 0)
-                    {
-                        // Debug.Log("acceleration slip left!");
-                    }
+                    // Debug.Log("acceleration slip left!");
                 }
+            }
 
-                if (axle.RightWheel.GetGroundHit(out hitRightWheel))
+            if (axle.RightWheel.GetGroundHit(out hitRightWheel))
+            {
+                if (hitLeftWheel.forwardSlip < 0)
                 {
-                    if (hitLeftWheel.forwardSlip < 0)
+                    // Debug.Log("acceleration slip right!");
+                }
+            }
+        }
+    }
+
+    private void AdjustWheelFriction()
+    {
+        foreach (AxleInfo axle in this._axleInfos)
+        {
+            foreach (WheelCollider wheel in axle.GetAxleWheels())
+            {
+                WheelHit hit;
+                if (wheel.GetGroundHit(out hit))
+                {
+                    WheelFrictionCurve sidewaysFrinction = wheel.sidewaysFriction;
+                    if (hit.collider.gameObject.CompareTag("OffTrackSurface"))
                     {
-                        // Debug.Log("acceleration slip right!");
+                        sidewaysFrinction.stiffness = _offTrackFriction;
                     }
+                    else if (wheel.rpm <= 0)
+                    {
+                        sidewaysFrinction.stiffness =
+                            this._handBrakeInput ?
+                            _lockedHandBrakeSidewaysFriction :
+                            _lockedBrakesSidewaysFriction;
+                    }
+                    else
+                    {
+                        sidewaysFrinction.stiffness = _defaultSidewaysFriction;
+                    }
+                    wheel.sidewaysFriction = sidewaysFrinction;
                 }
             }
         }

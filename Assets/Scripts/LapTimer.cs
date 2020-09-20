@@ -23,8 +23,8 @@ public class LapTimer : MonoBehaviour
 
         if (this._lapTimes.Count == 0)
         {
-            this._bestLapTimeDisplay.text = "Best: N/A";
-            this._lastLapTimeDisplay.text = "Last: N/A";
+            this._bestLapTimeDisplay.text = LapTimingConstants.NA;
+            this._lastLapTimeDisplay.text = LapTimingConstants.NA;
         }
     }
 
@@ -55,9 +55,9 @@ public class LapTimer : MonoBehaviour
         }
         else
         {
-            lapTimeText = "Invalid";
+            lapTimeText = LapTimingConstants.Invalid;
         }
-        this._lapTimeDisplay.text = $"Time: {lapTimeText}";
+        this._lapTimeDisplay.text = $"{lapTimeText}";
     }
 
     private void OnTriggerEnter(Collider otherCollider)
@@ -68,10 +68,10 @@ public class LapTimer : MonoBehaviour
             {
                 this._lapTimes.Add(this._elapsedTime);
 
-                this._lastLapTimeDisplay.text = $"Last: {Math.Round(this._elapsedTime, 3)}";
+                this._lastLapTimeDisplay.text = $"{Math.Round(this._elapsedTime, 3)}";
 
                 float bestLapTime = this._lapTimes.Min();
-                this._bestLapTimeDisplay.text = $"Best: {Math.Round(bestLapTime, 3)}";
+                this._bestLapTimeDisplay.text = $"{Math.Round(bestLapTime, 3)}";
             }
             
             this._timerStarted = true;

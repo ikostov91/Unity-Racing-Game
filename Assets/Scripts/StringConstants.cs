@@ -11,6 +11,20 @@
     public static class TagConstants
     {
         public const string PlayerVehicleTag = "PlayerVehicle";
+        public const string StartLightTag = "StartLight";
+    }
+
+    public static class LapTimingConstants
+    {
+        public const string Invalid = "Invalid";
+        public const string NA = "N/A";
+    }
+
+    public static class LevelNameConstants
+    {
+        public const string StartMenu = "StartMenu";
+        public const string RaceTrack = "RaceTrack";
+        public const string OptionsMenu = "OptionsMenu";
     }
 }
 

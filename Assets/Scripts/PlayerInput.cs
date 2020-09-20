@@ -6,7 +6,6 @@ public class PlayerInput : MonoBehaviour
 {
     // Setup for Xbox controller
     [SerializeField] private PlayerInputTypes _inputType = PlayerInputTypes.Keyboard;
-
     public float Throttle { get; private set; }
     public float Brake { get; private set; }
     public float Steering { get; private set; }
@@ -50,6 +49,7 @@ public class PlayerInput : MonoBehaviour
         }
         else
         {
+            return;
             float input = CrossPlatformInputManager.GetAxis("Vertical");
             this.Throttle = input > 0f ? input : 0f;
         }
@@ -59,11 +59,13 @@ public class PlayerInput : MonoBehaviour
     {
         if (this._inputType == PlayerInputTypes.Keyboard)
         {
+
             bool input = Input.GetKey(KeyCode.DownArrow);
             this.Brake = input == true ? 1 : 0;
         }
         else
         {
+            return;
             float input = CrossPlatformInputManager.GetAxis("Vertical");
             this.Brake = input < 0f ? input : 0f;
         }
@@ -78,6 +80,7 @@ public class PlayerInput : MonoBehaviour
         }
         else
         {
+            return;
             float input = Input.GetAxisRaw("Horizontal"); // Different Axis
             this.Steering = input;
         }
@@ -87,12 +90,12 @@ public class PlayerInput : MonoBehaviour
     {
         if (this._inputType == PlayerInputTypes.Keyboard)
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.S))
             {
                 this.GearUp = true;
                 this.GearDown = false;
             }
-            else if (Input.GetKeyDown(KeyCode.Z))
+            else if (Input.GetKeyDown(KeyCode.X))
             {
                 this.GearUp = false;
                 this.GearDown = true;
@@ -103,8 +106,9 @@ public class PlayerInput : MonoBehaviour
                 this.GearDown = false;
             }
         }
-        else
+        else if (this._inputType == PlayerInputTypes.Gamepad)
         {
+            return;
             if (Input.GetButtonDown("gearUp"))
             {
                 this.GearUp = true;
@@ -127,12 +131,13 @@ public class PlayerInput : MonoBehaviour
     {
         if (this._inputType == PlayerInputTypes.Keyboard)
         {
-            bool input = Input.GetKeyDown(KeyCode.Space);
+            bool input = Input.GetKey(KeyCode.Space);
             this.Handbrake = input;
         }
         else
         {
-            bool input = Input.GetButtonDown("handbrakeInput");
+            return;
+            bool input = Input.GetButton("handbrakeInput");
             this.Handbrake = input;
         }
     }
@@ -141,11 +146,12 @@ public class PlayerInput : MonoBehaviour
     {
         if (this._inputType == PlayerInputTypes.Keyboard)
         {
-            bool input = Input.GetKeyDown(KeyCode.X);
+            bool input = Input.GetKeyDown(KeyCode.Z);
             this.Clutch = input ? 0f : 1f;
         }
         else
         {
+            return;
             bool input = Input.GetButtonDown("clutchButton");
             this.Clutch = input ? 0f : 1f;
         }
@@ -155,11 +161,12 @@ public class PlayerInput : MonoBehaviour
     {
         if (this._inputType == PlayerInputTypes.Keyboard)
         {
-            bool input = Input.GetKey(KeyCode.S);
+            bool input = Input.GetKey(KeyCode.A);
             this.HybridBoost = input;
         }
         else
         {
+            return;
             bool input = Input.GetButton("boostButton");
             this.HybridBoost = input;
         }
