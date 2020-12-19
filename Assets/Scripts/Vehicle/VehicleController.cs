@@ -7,6 +7,7 @@ using Assets.Scripts.PlayerInput;
 [RequireComponent(typeof(IInput))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(GearboxController))]
+[RequireComponent(typeof(DownforceController))]
 public class VehicleController : MonoBehaviour
 {
     [Header("Adjustable Parameters")]
@@ -14,9 +15,6 @@ public class VehicleController : MonoBehaviour
     [SerializeField] private float _maxBrakingTorque = 4500f;
     [SerializeField] private float _handbrakeTorque = 10000f;
     [SerializeField] [Range(0.001f, 1.0f)] private float _steerSpeed = 0.2f;
-    //[SerializeField] private float _shiftUpTime = 1.0f;
-    //[SerializeField] private float _shiftDownTime = 0.2f;
-    [SerializeField] [Range(0.5f, 600f)] private float _downforce = 1.0f;
     [SerializeField] private float _hybridBoostTorque = 160f;
     [SerializeField] private float _speedThreshold = 10f;
 
@@ -111,7 +109,6 @@ public class VehicleController : MonoBehaviour
         this.ApplyBrakeTorqueToWheels();
         this.ApplySteeringToWheels();
         this.ApplyHandbrake();
-        this.AddDownforce();
         this.AdjustWheelFriction();
         this.DetectWheelSlip();
     }
@@ -348,11 +345,6 @@ public class VehicleController : MonoBehaviour
     {
         int roundedRpms = (int) Mathf.Floor(this._currentEngineRpm / 100f) * 100;
         return this.Engine.TorqueCurve[roundedRpms];
-    }
-
-    private void AddDownforce()
-    {
-        this._myRigidBody.AddForce(-transform.up * this._downforce * this._currentSpeed);
     }
 
     private void GetCurrentSpeed()

@@ -344,6 +344,7 @@ GameObject:
   - component: {fileID: 2117242907}
   - component: {fileID: 7438994962476799910}
   - component: {fileID: 2835834248523237174}
+  - component: {fileID: 9150966170196114844}
   m_Layer: 0
   m_Name: RaceCar
   m_TagString: Untagged
@@ -404,9 +405,6 @@ MonoBehaviour:
   _maxBrakingTorque: 6000
   _handbrakeTorque: 50000
   _steerSpeed: 0.3
-  _shiftUpTime: 0.02
-  _shiftDownTime: 0.05
-  _downforce: 200
   _hybridBoostTorque: 300
   _speedThreshold: 10
   _enableHybridBoost: 1
@@ -597,6 +595,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shiftUpTime: 0.02
   _shiftDownTime: 0.05
+--- !u!114 &9150966170196114844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569123347860847219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7541e0585364b04f835035b4d368abd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _downforce: 200
 --- !u!1 &1581963242552742617
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,15 +2167,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de4c2253cf86a984a8192ed33fc2baeb, type: 3}
---- !u!4 &6615142221987433503 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2753826153669421695, guid: de4c2253cf86a984a8192ed33fc2baeb,
-    type: 3}
-  m_PrefabInstance: {fileID: 9077632349182273120}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &2916302568157334810 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6161754673818200954, guid: de4c2253cf86a984a8192ed33fc2baeb,
+    type: 3}
+  m_PrefabInstance: {fileID: 9077632349182273120}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6615142221987433503 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2753826153669421695, guid: de4c2253cf86a984a8192ed33fc2baeb,
     type: 3}
   m_PrefabInstance: {fileID: 9077632349182273120}
   m_PrefabAsset: {fileID: 0}
