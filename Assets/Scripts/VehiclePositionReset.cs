@@ -5,13 +5,15 @@ public class VehiclePositionReset : MonoBehaviour
     [SerializeField] private Transform _startPosition;
     [SerializeField] private Transform _resetPosition;
 
-    [SerializeField] private VehicleController _vehicle;
+    [SerializeField] private GameObject _vehicle;
+    [SerializeField] private Global _global;
 
     private Rigidbody _vehicleRigidBody;
 
     void Start()
     {
-        this._vehicle = FindObjectOfType<VehicleController>();
+        this._global = FindObjectOfType<Global>();
+        this._vehicle = this._global.GetCurrentVehicle;
         this._vehicleRigidBody = this._vehicle.GetComponent<Rigidbody>();
 
         this.PlaceVehicleAtStartPosition();

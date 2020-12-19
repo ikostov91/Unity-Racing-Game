@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.PlayerInput;
+using UnityEngine;
 
 public class Fuel : MonoBehaviour
 {
@@ -9,14 +10,14 @@ public class Fuel : MonoBehaviour
     [SerializeField] private float _fuelConsumptionRate = 0.15f;
 
     private VehicleController _vehicleController;
-    private PlayerInput _playerInput;
+    private IInput _input;
 
     public float CurrentFuel => this._currentFuelAmount;
 
     void Start()
     {
         this._vehicleController = GetComponent<VehicleController>();
-        this._playerInput = GetComponent<PlayerInput>();
+        this._input = GetComponent<IInput>();
     }
 
     void Update()
@@ -27,7 +28,7 @@ public class Fuel : MonoBehaviour
 
     private void ConsumeFuel()
     {
-        float throttleInput = this._playerInput.Throttle;
+        float throttleInput = this._input.Throttle;
         float currentSpeed = this._vehicleController.Speed;
         float currentGear = this._vehicleController.CurrentGear;
 
@@ -46,7 +47,7 @@ public class Fuel : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.G))
         {
             this._currentFuelAmount = Mathf.Min(this._maxFuelAmount, this._currentFuelAmount + 50f);
-            this._vehicleController.CutTrottle = true;
+            this._vehicleController.CutTrottle = false;
         }
     }
 }

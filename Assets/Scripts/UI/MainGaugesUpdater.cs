@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class UIUpdater : MonoBehaviour
+public class MainGaugesUpdater : MonoBehaviour
 {
     private VehicleController _vehicleController;
     private Fuel _fuel;
@@ -11,18 +10,16 @@ public class UIUpdater : MonoBehaviour
     [SerializeField] private Slider _revCounterDisplay;
     [SerializeField] private Text _gearDisplay;
     [SerializeField] private Text _gearboxModeDisplay;
-    [SerializeField] private Text _torqueOutput;
     [SerializeField] private Slider _boostAmount;
     [SerializeField] private Image _boostSliderFill;
     [SerializeField] private Text _boostLabel;
     [SerializeField] private Text _speedDisplay;
-    [SerializeField] private Text _wheelRpmDisplay;
     [SerializeField] private Text _fuelDisplay;
 
     void Start()
     {
         this._vehicleController = FindObjectOfType<VehicleController>();
-        this._fuel = FindObjectOfType<Fuel>();
+        this._fuel = this._vehicleController.GetComponent<Fuel>();
 
         this.SetHybridBoostGaugeState();
     }
@@ -33,8 +30,6 @@ public class UIUpdater : MonoBehaviour
         this.UpdateRevCounter();
         this.UpdateRevsDisplay();
         this.UpdateCurrentGear();
-        this.UpdateGearboxMode();
-        this.UpdateTorqueOutput();
         this.UpdateHybridBoostGauge();
         this.UpdateFuelDisplay();
     }
@@ -95,16 +90,6 @@ public class UIUpdater : MonoBehaviour
         }
 
         this._gearDisplay.text = $"{GetGearText(this._vehicleController.CurrentGear)}";
-    }
-
-    private void UpdateGearboxMode()
-    {
-        this._gearboxModeDisplay.text = this._vehicleController.AutomaticGearbox ? Constants.GearboxConstants.GearboxAutoMode : Constants.GearboxConstants.GearboxManualMode;
-    }
-
-    private void UpdateTorqueOutput()
-    {
-        this._torqueOutput.text = $"Torque Output: {Mathf.RoundToInt(this._vehicleController.EngineTorque)}";
     }
 
     private void UpdateHybridBoostGauge()

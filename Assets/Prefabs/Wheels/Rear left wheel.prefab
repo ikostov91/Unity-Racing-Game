@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2123666566313029369}
   - component: {fileID: 2123666566313029370}
+  - component: {fileID: 5678633414343699271}
   m_Layer: 0
   m_Name: Rear left wheel
   m_TagString: Untagged
@@ -62,6 +63,19 @@ WheelCollider:
     m_AsymptoteValue: 0.75
     m_Stiffness: 1
   m_Enabled: 1
+--- !u!114 &5678633414343699271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123666566313029368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a4448eac04a2849a88812309a6338a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _yRotation: -180
 --- !u!1 &2123666566565937023
 GameObject:
   m_ObjectHideFlags: 0

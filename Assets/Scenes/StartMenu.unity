@@ -1059,7 +1059,7 @@ GameObject:
   - component: {fileID: 795001903}
   - component: {fileID: 795001902}
   m_Layer: 5
-  m_Name: Start Button
+  m_Name: Solo Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1129,7 +1129,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1546239023}
-        m_MethodName: StartGame
+        m_MethodName: GoToGameplayOptions
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2022,7 +2022,7 @@ GameObject:
   - component: {fileID: 1846462403}
   - component: {fileID: 1846462402}
   m_Layer: 5
-  m_Name: Start Text
+  m_Name: Solo Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2079,7 +2079,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: START
+  m_Text: SOLO
 --- !u!222 &1846462403
 CanvasRenderer:
   m_ObjectHideFlags: 0

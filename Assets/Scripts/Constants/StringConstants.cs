@@ -24,7 +24,15 @@
     {
         public const string StartMenu = "StartMenu";
         public const string RaceTrack = "RaceTrack";
+        public const string ParkingLot = "ParkingLot";
         public const string OptionsMenu = "OptionsMenu";
+        public const string GameplayOptions = "GameplayOptions";
+    }
+
+    public static class GameModeConstants
+    {
+        public const string FreeRide = "FreeRide";
+        public const string HotLap = "HotLap";
     }
 }
 
