@@ -8,6 +8,7 @@ using UnityEngine;
 public class GearboxController : MonoBehaviour
 {
     private IInput _input;
+    private EngineController _engineController;
     private VehicleController _vehicleController;
 
     private IEngine Engine;
@@ -19,10 +20,12 @@ public class GearboxController : MonoBehaviour
     [SerializeField] private float _shiftDownTime = 0.2f;
 
     public int Gear => this._currentGear;
+    public float GearRatio => this.Gearbox.GearRatios[this._currentGear];
 
     void Start()
     {
         this._input = GetComponent<IInput>();
+        this._engineController = GetComponent<EngineController>();
         this._vehicleController = GetComponent<VehicleController>();
 
         this.Engine = GetComponent<IEngine>();
@@ -63,7 +66,7 @@ public class GearboxController : MonoBehaviour
         {
             AxleInfo motorAxle = this._vehicleController.MotorAxles.FirstOrDefault();
             float wheelRpm = (motorAxle.RightWheel.rpm + motorAxle.LeftWheel.rpm) / 2;
-            float engineRpm = wheelRpm * this.Gearbox.ForwardGearRatios[nextGear] * this.Gearbox.FinalDriveRatio;
+            float engineRpm = wheelRpm * this.Gearbox.GearRatios[nextGear] * this.Gearbox.FinalDriveRatio;
             if (engineRpm < this.Engine.MinimumRpm || engineRpm > this.Engine.MaximumRmp)
             {
                 return false;
@@ -84,11 +87,20 @@ public class GearboxController : MonoBehaviour
     private IEnumerator ShiftIntoNewGear(int gear, float shiftTime)
     {
         this._currentGear = 0;
-        this._vehicleController.CutTrottle = true;
+        this._engineController.ThrottleCut = true;
 
         yield return new WaitForSeconds(shiftTime);
 
         this._currentGear = gear;
-        this._vehicleController.CutTrottle = false;
+        this._engineController.ThrottleCut = false;
+    }
+
+    public float GetTransmissionTorque(float engineTorque)
+    {
+        return engineTorque *
+            this.Gearbox.GearRatios[this._currentGear] *
+            this.Gearbox.FinalDriveRatio *
+            this.Gearbox.KPD *
+            this._input.Clutch;
     }
 }

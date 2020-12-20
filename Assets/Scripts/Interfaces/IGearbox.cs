@@ -11,8 +11,7 @@ namespace Assets.Scripts
         int ReverseGear { get; }
         int FirstGear { get; }
         float KPD { get; }
-        Dictionary<int, float> ForwardGearRatios { get; }
+        Dictionary<int, float> GearRatios { get; }
         float FinalDriveRatio { get; }
-        float ReverseRatio { get; }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class MainGaugesUpdater : MonoBehaviour
 {
     private VehicleController _vehicleController;
-    private Fuel _fuel;
+    private FuelController _fuel;
 
     [SerializeField] private Text _engineRevsDisplay;
     [SerializeField] private Slider _revCounterDisplay;
@@ -19,7 +19,7 @@ public class MainGaugesUpdater : MonoBehaviour
     void Start()
     {
         this._vehicleController = FindObjectOfType<VehicleController>();
-        this._fuel = this._vehicleController.GetComponent<Fuel>();
+        this._fuel = this._vehicleController.GetComponent<FuelController>();
 
         this.SetHybridBoostGaugeState();
     }
@@ -41,7 +41,7 @@ public class MainGaugesUpdater : MonoBehaviour
 
     private void SetHybridBoostGaugeState()
     {
-        bool boostEnabled = this._vehicleController.HybridBoostEnabled;
+        bool boostEnabled = this._vehicleController.TryGetComponent<BoostController>(out _);
 
         this._boostAmount.gameObject.SetActive(boostEnabled);
         this._boostSliderFill.gameObject.SetActive(boostEnabled);
@@ -94,20 +94,23 @@ public class MainGaugesUpdater : MonoBehaviour
 
     private void UpdateHybridBoostGauge()
     {
-        var currentBoostAmount = Mathf.InverseLerp(0f, 100f, this._vehicleController.BoostAmount);
-        this._boostAmount.value = currentBoostAmount;
-        if (this._vehicleController.HybridBoostAvailable)
+        if (this._vehicleController.TryGetComponent(out BoostController boostController))
         {
-            this._boostSliderFill.color = Color.red;
-        }
-        else
-        {
-            this._boostSliderFill.color = Color.grey;
+            var currentBoostAmount = Mathf.InverseLerp(0f, 100f, boostController.BoostAmount);
+            this._boostAmount.value = currentBoostAmount;
+            if (boostController.BoostAvailable)
+            {
+                this._boostSliderFill.color = Color.red;
+            }
+            else
+            {
+                this._boostSliderFill.color = Color.grey;
+            }
         }
     }
 
     private void UpdateFuelDisplay()
     {
-        this._fuelDisplay.text = this._fuel.CurrentFuel.ToString("F1");
+        this._fuelDisplay.text = this._fuel.FuelAmount.ToString("F1");
     }
 }

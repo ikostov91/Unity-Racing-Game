@@ -345,6 +345,7 @@ GameObject:
   - component: {fileID: 7438994962476799910}
   - component: {fileID: 2835834248523237174}
   - component: {fileID: 9150966170196114844}
+  - component: {fileID: 8447622924731066736}
   m_Layer: 0
   m_Name: RaceCar
   m_TagString: Untagged
@@ -405,12 +406,7 @@ MonoBehaviour:
   _maxBrakingTorque: 6000
   _handbrakeTorque: 50000
   _steerSpeed: 0.3
-  _hybridBoostTorque: 300
   _speedThreshold: 10
-  _enableHybridBoost: 1
-  _hybridBoostDepletionRate: 20
-  _hybridBoostRechargeRate: 20
-  _hybridBoostRequiredAmount: 80
   _axleInfos:
   - LeftWheel: {fileID: 3249085565991788964}
     RightWheel: {fileID: 7151774314818116996}
@@ -543,7 +539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxFuelAmount: 140
-  _currentFuelAmount: 5
+  _fuelAmount: 50
   _fuelConsumptionRate: 0.3
 --- !u!114 &1542394531
 MonoBehaviour:
@@ -608,6 +604,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _downforce: 200
+--- !u!114 &8447622924731066736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569123347860847219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fcdc897afd51874582159881029387e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hybridBoostTorque: 160
+  _hybridBoostDepletionRate: 20
+  _hybridBoostRechargeRate: 20
+  _hybridBoostRequiredAmount: 80
 --- !u!1 &1581963242552742617
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,15 +1666,15 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3697208358533028577, guid: a1df326719960454089c11f4430d20cc, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a1df326719960454089c11f4430d20cc, type: 3}
---- !u!4 &7602752769698962017 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6543018004233645780, guid: a1df326719960454089c11f4430d20cc,
-    type: 3}
-  m_PrefabInstance: {fileID: 3697208357951829173}
-  m_PrefabAsset: {fileID: 0}
 --- !u!20 &1452400828 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 3697208358730929161, guid: a1df326719960454089c11f4430d20cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 3697208357951829173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &9077632350262941903 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 5671481015300172922, guid: a1df326719960454089c11f4430d20cc,
     type: 3}
   m_PrefabInstance: {fileID: 3697208357951829173}
   m_PrefabAsset: {fileID: 0}
@@ -1672,9 +1684,9 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 3697208357951829173}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &9077632350262941903 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 5671481015300172922, guid: a1df326719960454089c11f4430d20cc,
+--- !u!4 &7602752769698962017 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6543018004233645780, guid: a1df326719960454089c11f4430d20cc,
     type: 3}
   m_PrefabInstance: {fileID: 3697208357951829173}
   m_PrefabAsset: {fileID: 0}

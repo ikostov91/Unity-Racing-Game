@@ -640,12 +640,7 @@ MonoBehaviour:
   _maxBrakingTorque: 3500
   _handbrakeTorque: 10000
   _steerSpeed: 0.3
-  _hybridBoostTorque: 0
   _speedThreshold: 10
-  _enableHybridBoost: 0
-  _hybridBoostDepletionRate: 20
-  _hybridBoostRechargeRate: 20
-  _hybridBoostRequiredAmount: 80
   _axleInfos:
   - LeftWheel: {fileID: 1277518299837453124}
     RightWheel: {fileID: 3431777682372570262}
@@ -705,7 +700,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4836166447769857590}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 471fedd3da8e60342a4fc17e85ceccf3, type: 3}
   m_Name: 
@@ -763,7 +758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxFuelAmount: 50
-  _currentFuelAmount: 50
+  _fuelAmount: 50
   _fuelConsumptionRate: 0.05
 --- !u!114 &1529566379
 MonoBehaviour:

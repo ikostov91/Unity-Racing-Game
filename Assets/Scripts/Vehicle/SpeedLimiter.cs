@@ -5,12 +5,14 @@ public class SpeedLimiter : MonoBehaviour
 {
     private const float _speedLimitKph = 60f;
 
+    private EngineController _engineController;
     private VehicleController _vehicleController;
 
     private bool _limiterActive = false;
 
     void Start()
     {
+        this._engineController = GetComponent<EngineController>();
         this._vehicleController = GetComponent<VehicleController>();    
     }
 
@@ -52,11 +54,11 @@ public class SpeedLimiter : MonoBehaviour
         {
             if (this._vehicleController.Speed >= _speedLimitKph)
             {
-                this._vehicleController.CutTrottle = true;
+                this._engineController.ThrottleCut = true;
             }
             else
             {
-                this._vehicleController.CutTrottle = false;
+                this._engineController.ThrottleCut = false;
             }
         }
     }

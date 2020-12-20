@@ -15,17 +15,13 @@ public class PauseHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("UPDATE");
         this.PauseGame();
     }
 
     private void PauseGame()
     {
-        Debug.Log("PAUSE GAME");
         if (this._levelLoader.IsCurrentSceneGameplay())
         {
-            Debug.Log("PAUSE GAME");
-            Debug.Log(this._levelLoader.GetCurrentSceneName());
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (Time.timeScale == 1f)

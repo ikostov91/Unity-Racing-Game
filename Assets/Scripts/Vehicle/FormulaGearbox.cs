@@ -14,7 +14,7 @@ public class FormulaGearbox : MonoBehaviour, IGearbox
     public int FirstGear => 1;
     public float KPD => 0.96f;
 
-    public Dictionary<int, float> ForwardGearRatios => new Dictionary<int, float>()
+    public Dictionary<int, float> GearRatios => new Dictionary<int, float>()
     {
         { -1, 2.90f },
         {  0, 0f    },
@@ -28,6 +28,4 @@ public class FormulaGearbox : MonoBehaviour, IGearbox
     };
 
     public float FinalDriveRatio => 3.42f;
-
-    public float ReverseRatio => 2.90f;
 }
