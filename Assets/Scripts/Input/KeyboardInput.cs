@@ -71,7 +71,7 @@ namespace Assets.Scripts.PlayerInput
 
         private void ProcessClutch()
         {
-            bool input = Input.GetKeyDown(KeyCode.Z);
+            bool input = Input.GetKey(KeyCode.Z);
             this._clutch = input == true ? 0f : 1f;
         }
 

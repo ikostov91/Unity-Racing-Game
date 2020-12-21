@@ -616,10 +616,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fcdc897afd51874582159881029387e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hybridBoostTorque: 160
-  _hybridBoostDepletionRate: 20
-  _hybridBoostRechargeRate: 20
-  _hybridBoostRequiredAmount: 80
+  _boostTorque: 160
+  _depletionRate: 20
+  _rechargeRate: 20
+  _minimumActiveAmount: 80
 --- !u!1 &1581963242552742617
 GameObject:
   m_ObjectHideFlags: 0

@@ -56,7 +56,7 @@ public class Global : MonoBehaviour
     {
         if (this._levelLoader.IsCurrentSceneGameplay())
         {
-            Instantiate(this._currentVehicle, new Vector3(0, 0, 0), Quaternion.identity);
+            Instantiate(this._currentVehicle, new Vector3(6, 0, 0), Quaternion.identity);
             Instantiate(this.MainGaugesCanvas);
         }
     }

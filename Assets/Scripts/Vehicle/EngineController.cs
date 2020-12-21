@@ -63,7 +63,7 @@ public class EngineController : MonoBehaviour
         float effInertia = this.Engine.Inertia + this._input.Clutch * (_wheelInertia * Mathf.Abs(currentGearRatio));
         this._backdriveTorque = 0f;
 
-        if (this._gearboxController.Gear != 0 && this._input.Clutch == 1)
+        if (this._gearboxController.Gear != 0 && this._input.Clutch != 0f)
         {
             float wheelRPM = 0f;
             float newRpm = 0f;
