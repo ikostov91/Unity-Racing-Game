@@ -6,32 +6,21 @@ using UnityEngine.SceneManagement;
 public class LevelLoader : MonoBehaviour
 {
     private string _currentScene = LevelNameConstants.StartMenu;
-    
+    private string[] _gameplayScenes = { LevelNameConstants.RaceTrack, LevelNameConstants.OvalTrack };
+
     private Global _global;
-    private PauseScript _pauseScript;
 
-    void Awake()
-    {
-        int levelLoaderCount = FindObjectsOfType<LevelLoader>().Length;
-        if (levelLoaderCount > 1)
-        {
-            this.gameObject.SetActive(false);
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            DontDestroyOnLoad(this.gameObject);
-        }
-    }
+    public string ActiveScene => this._currentScene;
 
-    private void Start()
+    void Start()
     {
         this._global = FindObjectOfType<Global>();
+        this._currentScene = SceneManager.GetActiveScene().name;
     }
 
-    public void StartGame()
+    public void LoadGameStart()
     {
-        this._currentScene = this._global.GetCurrentTrack;
+        this._currentScene = this._global.SelectedTrack;
         SceneManager.LoadScene(this._currentScene);
     }
 
@@ -71,7 +60,7 @@ public class LevelLoader : MonoBehaviour
 
     public bool IsCurrentSceneGameplay()
     {
-        string[] gameplayScenes = new string[] { LevelNameConstants.ParkingLot, LevelNameConstants.RaceTrack };
-        return gameplayScenes.Any(x => x == this._currentScene);
+        string activeScene = SceneManager.GetActiveScene().name;
+        return _gameplayScenes.Any(x => x == activeScene);
     }
 }

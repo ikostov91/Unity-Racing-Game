@@ -5,6 +5,7 @@ using Assets.Scripts.PlayerInput;
 
 [RequireComponent(typeof(IInput))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(EngineController))]
 [RequireComponent(typeof(GearboxController))]
 [RequireComponent(typeof(DownforceController))]
 public class VehicleController : MonoBehaviour
@@ -25,12 +26,10 @@ public class VehicleController : MonoBehaviour
 
     [SerializeField] public AxleInfo[] _axleInfos;
 
-    public IEngine Engine;
     public IGearbox Gearbox;
 
     [SerializeField] private Transform _centerOfMass;
 
-    private int _gear = 0;
     private float _wheelsTorque = 0.0001f;
     private float _speed = 0.0f;
 
@@ -43,8 +42,6 @@ public class VehicleController : MonoBehaviour
     [SerializeField] private float _lockedHandBrakeSidewaysFriction = 0.8f;
     [SerializeField] private float _offTrackFriction = 0.3f;
 
-    public float EngineRpm => this._engineController.EngineRpm;
-    public int CurrentGear => this._gear;
     public float Speed => this._speed;
     public float SpeedThreshold => this._speedThreshold;
 
@@ -55,7 +52,7 @@ public class VehicleController : MonoBehaviour
     {
         this._rigidBody = GetComponent<Rigidbody>();
         this._input = GetComponent<IInput>();
-        this.Engine = GetComponent<IEngine>();
+
         this.Gearbox = GetComponent<IGearbox>();
 
         this._engineController = GetComponent<EngineController>();
@@ -85,14 +82,8 @@ public class VehicleController : MonoBehaviour
 
     void Update()
     {
-        this.GetCurrentGear();
         this.GetTransmissionTorque();
         this.GetCurrentSpeed();
-    }
-
-    private void GetCurrentGear()
-    {
-        this._gear = this._gearboxController.Gear;
     }
 
     private void ApplyTransmissionTorqueToWheels()
@@ -103,9 +94,9 @@ public class VehicleController : MonoBehaviour
 
         foreach (AxleInfo axle in this._axleInfos.Where(x => x.Motor))
         {
-            if (this._gear != 0)
+            if (this._gearboxController.Gear != 0)
             {
-                float currentGearRatio = this.Gearbox.GearRatios[this._gear];
+                float currentGearRatio = this.Gearbox.GearRatios[this._gearboxController.Gear];
                 thrustTorque = this._wheelsTorque;
                 backdriveTorque = Mathf.Clamp(this._engineController.BackdriveTorque, 0, 1e8f) / currentGearRatio;
                 engineBrakeTorque = Mathf.Clamp(this._engineController.BackdriveTorque, -1e8f, 0f) / currentGearRatio;
@@ -123,7 +114,7 @@ public class VehicleController : MonoBehaviour
             }
             else
             {
-                int torqueDirection = this._gear >= 0 ? 1 : -1;
+                int torqueDirection = this._gearboxController.Gear >= 0 ? 1 : -1;
                 foreach (WheelCollider wheel in axle.GetAxleWheels())
                 {
                     wheel.motorTorque = (totalTorque / 2) * torqueDirection * axle.TorqueBias;
@@ -139,7 +130,7 @@ public class VehicleController : MonoBehaviour
 
     private float GetMaximumWheelRpmPossible()
     {
-        float currentGearRatio = this.Gearbox.GearRatios[this._gear];
+        float currentGearRatio = this.Gearbox.GearRatios[this._gearboxController.Gear];
         float maxWheelRpm = this._engineController.EngineRpm / (currentGearRatio * this.Gearbox.FinalDriveRatio);
         return maxWheelRpm;
     }

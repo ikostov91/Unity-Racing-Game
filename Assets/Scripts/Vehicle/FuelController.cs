@@ -28,7 +28,6 @@ public class FuelController : MonoBehaviour
     private void ConsumeFuel()
     {
         float throttleInput = this._input.Throttle;
-
         float consumedFuel = this._fuelConsumptionRate * Time.deltaTime * Mathf.Max(0.1f, throttleInput);
         this._fuelAmount = Mathf.Max(this._fuelAmount -= consumedFuel, 0f);
     }

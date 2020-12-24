@@ -21,6 +21,9 @@ public class EngineController : MonoBehaviour
     private bool _throttleCut = false;
 
     public float EngineRpm => this._engineRpm;
+    public int EngineRedLine => this.Engine.RedLine;
+    public int EngineMinRpm => this.Engine.MinimumRpm;
+    public int EngineMaxRpm => this.Engine.MaximumRmp;
     public float BackdriveTorque => this._backdriveTorque;
     public float EngineTorque
     {

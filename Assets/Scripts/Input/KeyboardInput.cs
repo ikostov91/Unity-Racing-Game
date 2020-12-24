@@ -26,14 +26,18 @@ namespace Assets.Scripts.PlayerInput
 
         void Update()
         {
-            this.ProcessThrottle();
-            this.ProcessBrake();
-            this.ProcessSteering();
-            this.ProcessGearUp();
-            this.ProcessGearDown();
-            this.ProcessHandbrake();
-            this.ProcessClutch();
-            this.ProcessBoost();
+            if (!PauseScript.GamePaused)
+            {
+                this.ProcessThrottle();
+                this.ProcessBrake();
+                this.ProcessSteering();
+                this.ProcessGearUp();
+                this.ProcessGearDown();
+                this.ProcessHandbrake();
+                this.ProcessClutch();
+                this.ProcessBoost();
+            }
+            
         }
 
         private void ProcessThrottle()

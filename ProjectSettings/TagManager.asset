@@ -9,6 +9,7 @@ TagManager:
   - OffTrackSurface
   - StartLight
   - Cameras
+  - LevelLoader
   layers:
   - Default
   - TransparentFX

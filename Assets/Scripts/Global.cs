@@ -4,26 +4,22 @@ using UnityEngine.SceneManagement;
 
 public class Global : MonoBehaviour
 {
-    private LevelLoader _levelLoader;
-
     [SerializeField] private GameObject _currentVehicle;
     [SerializeField] private string _currentTrack = LevelNameConstants.RaceTrack;
     [SerializeField] private string _currentGameMode = GameModeConstants.FreeRide;
+    [SerializeField] private GameObject MainGaugesCanvas;
 
-    [SerializeField] public GameObject MainGaugesCanvas;
+    private LevelLoader _levelLoader;
 
-    public GameObject GetCurrentVehicle => this._currentVehicle;
-    public string GetCurrentTrack => this._currentTrack;
+    public GameObject SelectedVehicle => this._currentVehicle;
+    public string SelectedTrack => this._currentTrack;
 
     private void Awake()
     {
-        this._levelLoader = FindObjectOfType<LevelLoader>();
-
         int globalCount = FindObjectsOfType<Global>().Length;
         if (globalCount > 1)
         {
             this.gameObject.SetActive(false);
-
             Destroy(this.gameObject);
         }
         else
@@ -34,6 +30,7 @@ public class Global : MonoBehaviour
 
     void Start()
     {
+        this._levelLoader = FindObjectOfType<LevelLoader>();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 

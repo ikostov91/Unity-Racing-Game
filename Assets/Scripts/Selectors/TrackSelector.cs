@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class TrackSelector : MonoBehaviour
 {
-    [SerializeField] private string[] _allTracks = new string[] { LevelNameConstants.RaceTrack, LevelNameConstants.ParkingLot };
+    [SerializeField] private string[] _allTracks = new string[] { LevelNameConstants.RaceTrack, LevelNameConstants.OvalTrack };
     [SerializeField] private string _initialTrack = LevelNameConstants.RaceTrack;
 
     [SerializeField] private Dropdown _trackSelectDropdown;

@@ -24,6 +24,7 @@
     {
         public const string StartMenu = "StartMenu";
         public const string RaceTrack = "RaceTrack";
+        public const string OvalTrack = "OvalTrack";
         public const string ParkingLot = "ParkingLot";
         public const string OptionsMenu = "OptionsMenu";
         public const string GameplayOptions = "GameplayOptions";

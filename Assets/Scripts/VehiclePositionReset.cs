@@ -13,7 +13,7 @@ public class VehiclePositionReset : MonoBehaviour
     void Start()
     {
         this._global = FindObjectOfType<Global>();
-        this._vehicle = this._global.GetCurrentVehicle;
+        this._vehicle = this._global.SelectedVehicle;
         this._vehicleRigidBody = this._vehicle.GetComponent<Rigidbody>();
 
         this.PlaceVehicleAtStartPosition();

@@ -190,18 +190,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d34c8eb65ee3a84aa55d0f95df1f8f0, type: 3}
---- !u!114 &509587835 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5426421638190321132, guid: 9d34c8eb65ee3a84aa55d0f95df1f8f0,
-    type: 3}
-  m_PrefabInstance: {fileID: 509587834}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85ca1565379aafc41bf96db2906b9e34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &510047369
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +272,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 509587835}
+      - m_Target: {fileID: 5426421638190321132, guid: 9d34c8eb65ee3a84aa55d0f95df1f8f0,
+          type: 3}
         m_MethodName: GoToStartMenu
         m_Mode: 1
         m_Arguments:

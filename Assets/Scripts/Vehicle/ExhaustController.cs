@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 
-public class Exhaust : MonoBehaviour
+public class ExhaustController : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _exhaust;
     [SerializeField] private float _exhaustRateMin = 100;
     [SerializeField] private float _exhaustRateMax = 500;
 
-    private VehicleController _vehicleController;
+    private EngineController _engineController;
 
-    // Start is called before the first frame update
     void Start()
     {
-        this._vehicleController = GetComponent<VehicleController>();
+        this._engineController = GetComponent<EngineController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         this.EmitExhaust();
@@ -22,10 +20,10 @@ public class Exhaust : MonoBehaviour
 
     private void EmitExhaust()
     {
-        float currentEngineRpm = this._vehicleController.EngineRpm;
+        float currentEngineRpm = this._engineController.EngineRpm;
         float interpolatedRpm = Mathf.InverseLerp(
-                this._vehicleController.Engine.MinimumRpm,
-                this._vehicleController.Engine.MaximumRmp,
+                this._engineController.EngineMinRpm,
+                this._engineController.EngineMaxRpm,
                 currentEngineRpm
             );
         float interpolatedEmissionRate = Mathf.Lerp(this._exhaustRateMin, this._exhaustRateMax, interpolatedRpm);

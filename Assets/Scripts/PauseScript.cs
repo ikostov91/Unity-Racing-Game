@@ -2,19 +2,24 @@
 
 public class PauseScript : MonoBehaviour
 {
-    private void Start()
+    public static bool GamePaused = false;
+
+    private const float PAUSED_TIME_SCALE = 0.0000000001f;
+    private const float NORMAL_TIME_SCALE = 1f;
+
+    [SerializeField] private Canvas PauseCanvas;
+
+    void Update()
     {
-        // this.gameObject.SetActive(false);    
+        this.PauseGame();    
     }
 
-    public void OnResumeClick()
+    private void PauseGame()
     {
-        Debug.Log("Resume");
-    }
-
-    public void OnExitClick()
-    {
-        Debug.Log("Cancel");
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GamePaused = !GamePaused;
+            Time.timeScale = GamePaused ? PAUSED_TIME_SCALE : NORMAL_TIME_SCALE;
+        }
     }
 }

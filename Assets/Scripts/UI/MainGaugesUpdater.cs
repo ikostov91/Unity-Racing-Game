@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MainGaugesUpdater : MonoBehaviour
 {
     private VehicleController _vehicleController;
-    private FuelController _fuel;
+    private EngineController _engineController;
+    private GearboxController _gearboxController;
+    private FuelController _fuelController;
 
     [SerializeField] private Text _engineRevsDisplay;
     [SerializeField] private Slider _revCounterDisplay;
@@ -19,9 +22,11 @@ public class MainGaugesUpdater : MonoBehaviour
     void Start()
     {
         this._vehicleController = FindObjectOfType<VehicleController>();
-        this._fuel = this._vehicleController.GetComponent<FuelController>();
+        this._engineController = FindObjectOfType<EngineController>();
+        this._gearboxController = FindObjectOfType<GearboxController>();
+        this._fuelController = this._vehicleController.GetComponent<FuelController>();
 
-        this.SetHybridBoostGaugeState();
+        this.SetBoostGaugeState();
     }
 
     void Update()
@@ -30,7 +35,7 @@ public class MainGaugesUpdater : MonoBehaviour
         this.UpdateRevCounter();
         this.UpdateRevsDisplay();
         this.UpdateCurrentGear();
-        this.UpdateHybridBoostGauge();
+        this.UpdateBoostGauge();
         this.UpdateFuelDisplay();
     }
 
@@ -39,7 +44,7 @@ public class MainGaugesUpdater : MonoBehaviour
         this._speedDisplay.text = Mathf.RoundToInt(this._vehicleController.Speed).ToString("D3");
     }
 
-    private void SetHybridBoostGaugeState()
+    private void SetBoostGaugeState()
     {
         bool boostEnabled = this._vehicleController.TryGetComponent<BoostController>(out _);
 
@@ -51,18 +56,32 @@ public class MainGaugesUpdater : MonoBehaviour
     private void UpdateRevCounter()
     {
         var currentRevCounter = Mathf.InverseLerp(
-                this._vehicleController.Engine.MinimumRpm,
-                this._vehicleController.Engine.MaximumRmp,
-                this._vehicleController.EngineRpm
+                this._engineController.EngineMinRpm,
+                this._engineController.EngineMaxRpm,
+                this._engineController.EngineRpm
             );
         this._revCounterDisplay.value = currentRevCounter;
+
+        Image fill = this._revCounterDisplay.GetComponentsInChildren<Image>()
+            .FirstOrDefault(t => t.name == "Fill");
+        if (fill != null)
+        {
+            if (this._engineController.EngineRpm > this._engineController.EngineRedLine)
+            {
+                fill.color = Color.red;
+            }
+            else
+            {
+                fill.color = Color.yellow;
+            }
+        }
     }
 
     private void UpdateRevsDisplay()
     {
-        this._engineRevsDisplay.text = Mathf.RoundToInt(this._vehicleController.EngineRpm).ToString();
+        this._engineRevsDisplay.text = Mathf.RoundToInt(this._engineController.EngineRpm).ToString();
 
-        if (this._vehicleController.EngineRpm > this._vehicleController.Engine.RedLine)
+        if (this._engineController.EngineRpm > this._engineController.EngineRedLine)
         {
             this._engineRevsDisplay.color = Color.red;
         }
@@ -76,23 +95,21 @@ public class MainGaugesUpdater : MonoBehaviour
     {
         string GetGearText(int currentGear)
         {
-            if (currentGear == 0)
+            switch (currentGear)
             {
-                return Constants.GearboxConstants.GearboxNeutralGear;
+                case 0:
+                    return Constants.GearboxConstants.GearboxNeutralGear;
+                case -1:
+                    return Constants.GearboxConstants.GearboxReverseGear;
+                default:
+                    return currentGear.ToString();
             }
-
-            if (currentGear == -1)
-            {
-                return Constants.GearboxConstants.GearboxReverseGear;
-            }
-
-            return currentGear.ToString();
         }
 
-        this._gearDisplay.text = $"{GetGearText(this._vehicleController.CurrentGear)}";
+        this._gearDisplay.text = $"{GetGearText(this._gearboxController.Gear)}";
     }
 
-    private void UpdateHybridBoostGauge()
+    private void UpdateBoostGauge()
     {
         if (this._vehicleController.TryGetComponent(out BoostController boostController))
         {
@@ -111,6 +128,6 @@ public class MainGaugesUpdater : MonoBehaviour
 
     private void UpdateFuelDisplay()
     {
-        this._fuelDisplay.text = this._fuel.FuelAmount.ToString("F1");
+        this._fuelDisplay.text = this._fuelController.FuelAmount.ToString("F1");
     }
 }

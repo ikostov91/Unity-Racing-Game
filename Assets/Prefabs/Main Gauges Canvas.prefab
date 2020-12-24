@@ -1525,12 +1525,10 @@ MonoBehaviour:
   _revCounterDisplay: {fileID: 2675466854992533247}
   _gearDisplay: {fileID: 1424958945}
   _gearboxModeDisplay: {fileID: 561609664}
-  _torqueOutput: {fileID: 0}
   _boostAmount: {fileID: 1578310122}
   _boostSliderFill: {fileID: 1067408739}
   _boostLabel: {fileID: 4051855090980292843}
   _speedDisplay: {fileID: 1058793209}
-  _wheelRpmDisplay: {fileID: 0}
   _fuelDisplay: {fileID: 777599922}
 --- !u!1 &2675466854579251235
 GameObject:
