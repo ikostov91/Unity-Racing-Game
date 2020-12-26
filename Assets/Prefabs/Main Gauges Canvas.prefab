@@ -1530,6 +1530,7 @@ MonoBehaviour:
   _boostLabel: {fileID: 4051855090980292843}
   _speedDisplay: {fileID: 1058793209}
   _fuelDisplay: {fileID: 777599922}
+  MainGaugesCanvas: {fileID: 2675466854562922421}
 --- !u!1 &2675466854579251235
 GameObject:
   m_ObjectHideFlags: 0

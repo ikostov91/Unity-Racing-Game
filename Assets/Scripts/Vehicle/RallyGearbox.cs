@@ -6,9 +6,9 @@ using UnityEngine;
 [Serializable]
 public class RallyGearbox : MonoBehaviour, IGearbox
 {
-    public int NumberOfGears => 5;
+    public int NumberOfGears => 6;
     public int LowestGear => -1;
-    public int HighestGear => 5;
+    public int HighestGear => 6;
     public int NeutralGear => 0;
     public int ReverseGear => -1;
     public int FirstGear => 1;
@@ -18,12 +18,13 @@ public class RallyGearbox : MonoBehaviour, IGearbox
     {
         { -1, 3.89f },
         {  0, 0f    },
-        {  1, 4.2f  },
-        {  2, 2.49f },
-        {  3, 1.67f },
-        {  4, 1.24f },
-        {  5, 1f    },
+        {  1, 2.94f  },
+        {  2, 2.33f },
+        {  3, 1.88f },
+        {  4, 1.55f },
+        {  5, 1.3f    },
+        {  6, 1.1f    },
     };
 
-    public float FinalDriveRatio => 2.93f;
+    public float FinalDriveRatio => 4.1f;
 }

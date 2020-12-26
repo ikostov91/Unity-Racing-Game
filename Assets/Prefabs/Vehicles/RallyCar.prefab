@@ -580,6 +580,8 @@ GameObject:
   - component: {fileID: 1529566379}
   - component: {fileID: 4907238525782749263}
   - component: {fileID: 5270212406922533296}
+  - component: {fileID: 6757997153782393987}
+  - component: {fileID: 6187261166935391063}
   m_Layer: 0
   m_Name: RallyCar
   m_TagString: Untagged
@@ -596,7 +598,7 @@ Transform:
   m_GameObject: {fileID: 4836166447769857590}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 6.6, y: 0.684, z: -88.8}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7022516423724349016}
   - {fileID: 2926890007024472387}
@@ -644,7 +646,7 @@ MonoBehaviour:
   _axleInfos:
   - LeftWheel: {fileID: 1277518299837453124}
     RightWheel: {fileID: 3431777682372570262}
-    Motor: 1
+    Motor: 0
     Steering: 1
     HandBrake: 0
     BrakeBias: 0.7
@@ -799,6 +801,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _downforce: 50
+--- !u!114 &6757997153782393987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836166447769857590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30179a7786f5f8b4c8ac1d58451e9456, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6187261166935391063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836166447769857590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a8cfa28165acd4780306587bae0707, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _exhaust: {fileID: 0}
+  _exhaustRateMin: 100
+  _exhaustRateMax: 500
 --- !u!1 &5102049116753889259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1536,15 +1565,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de4c2253cf86a984a8192ed33fc2baeb, type: 3}
---- !u!198 &1959179537535378021 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6161754673818200954, guid: de4c2253cf86a984a8192ed33fc2baeb,
-    type: 3}
-  m_PrefabInstance: {fileID: 5670757962802252063}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7531454649252881248 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2753826153669421695, guid: de4c2253cf86a984a8192ed33fc2baeb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5670757962802252063}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1959179537535378021 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6161754673818200954, guid: de4c2253cf86a984a8192ed33fc2baeb,
     type: 3}
   m_PrefabInstance: {fileID: 5670757962802252063}
   m_PrefabAsset: {fileID: 0}
@@ -1673,9 +1702,9 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3697208358533028577, guid: a1df326719960454089c11f4430d20cc, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a1df326719960454089c11f4430d20cc, type: 3}
---- !u!20 &4691626736379937768 stripped
+--- !u!20 &4691626735073127326 stripped
 Camera:
-  m_CorrespondingSourceObject: {fileID: 3697208357890276479, guid: a1df326719960454089c11f4430d20cc,
+  m_CorrespondingSourceObject: {fileID: 3697208358730929161, guid: a1df326719960454089c11f4430d20cc,
     type: 3}
   m_PrefabInstance: {fileID: 8237961959279001495}
   m_PrefabAsset: {fileID: 0}
@@ -1685,9 +1714,9 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 8237961959279001495}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &4691626735073127326 stripped
+--- !u!20 &4691626736379937768 stripped
 Camera:
-  m_CorrespondingSourceObject: {fileID: 3697208358730929161, guid: a1df326719960454089c11f4430d20cc,
+  m_CorrespondingSourceObject: {fileID: 3697208357890276479, guid: a1df326719960454089c11f4430d20cc,
     type: 3}
   m_PrefabInstance: {fileID: 8237961959279001495}
   m_PrefabAsset: {fileID: 0}

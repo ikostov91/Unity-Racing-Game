@@ -5,7 +5,7 @@ namespace Assets.Scripts
 {
     public class FormulaEngine : MonoBehaviour, IEngine
     {
-        public int MinimumRpm => 800;
+        public int MinimumRpm => 2000;
         public int MaximumRmp => 9000;
         public int RedLine => 8500;
         public int UpShiftRpm => 8200;

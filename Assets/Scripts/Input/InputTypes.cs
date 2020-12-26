@@ -3,7 +3,7 @@
 namespace GameInput
 {
     [Serializable]
-    public enum PlayerInputTypes
+    public enum InputTypes
     {
         Keyboard = 1,
         Gamepad = 2

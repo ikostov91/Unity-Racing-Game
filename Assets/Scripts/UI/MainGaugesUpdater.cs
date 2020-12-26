@@ -19,6 +19,8 @@ public class MainGaugesUpdater : MonoBehaviour
     [SerializeField] private Text _speedDisplay;
     [SerializeField] private Text _fuelDisplay;
 
+    [SerializeField] private Canvas MainGaugesCanvas;
+
     void Start()
     {
         this._vehicleController = FindObjectOfType<VehicleController>();
@@ -27,6 +29,13 @@ public class MainGaugesUpdater : MonoBehaviour
         this._fuelController = this._vehicleController.GetComponent<FuelController>();
 
         this.SetBoostGaugeState();
+
+        this.SetCanvas();
+    }
+
+    private void SetCanvas()
+    {
+        this.MainGaugesCanvas.enabled = !PauseScript.GamePaused;
     }
 
     void Update()

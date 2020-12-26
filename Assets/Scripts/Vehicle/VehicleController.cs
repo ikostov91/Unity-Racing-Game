@@ -13,7 +13,7 @@ public class VehicleController : MonoBehaviour
     [Header("Adjustable Parameters")]
     [SerializeField] private float _maxSteeringAngle = 35f;
     [SerializeField] private float _maxBrakingTorque = 4500f;
-    [SerializeField] private float _handbrakeTorque = 10000f;
+    [SerializeField] private float _handbrakeTorque = Mathf.Infinity;
     [SerializeField] [Range(0.001f, 1.0f)] private float _steerSpeed = 0.2f;
     [SerializeField] private float _speedThreshold = 10f;
 
@@ -72,11 +72,11 @@ public class VehicleController : MonoBehaviour
 
     void FixedUpdate()
     {
-        this.ApplyTransmissionTorqueToWheels();
-        this.ApplyBrakeTorqueToWheels();
-        this.ApplySteeringToWheels();
+        this.ApplyDriveTorque();
+        this.ApplyBrakeTorque();
+        this.ApplySteering();
         this.ApplyHandbrake();
-        this.AdjustWheelFriction();
+        // this.AdjustWheelFriction();
         // this.DetectWheelSlip();
     }
 
@@ -86,7 +86,7 @@ public class VehicleController : MonoBehaviour
         this.GetCurrentSpeed();
     }
 
-    private void ApplyTransmissionTorqueToWheels()
+    private void ApplyDriveTorque()
     {
         float thrustTorque = 0f;
         float backdriveTorque = 0f;
@@ -135,7 +135,7 @@ public class VehicleController : MonoBehaviour
         return maxWheelRpm;
     }
 
-    private void ApplyBrakeTorqueToWheels()
+    private void ApplyBrakeTorque()
     {
         foreach (AxleInfo axle in this._axleInfos)
         {
@@ -146,7 +146,7 @@ public class VehicleController : MonoBehaviour
         }
     }
 
-    private void ApplySteeringToWheels()
+    private void ApplySteering()
     {
         foreach (AxleInfo axle in this._axleInfos.Where(x => x.Steering))
         {

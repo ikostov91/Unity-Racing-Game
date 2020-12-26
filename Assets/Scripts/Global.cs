@@ -1,18 +1,22 @@
 ﻿using Constants;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Global : MonoBehaviour
 {
     [SerializeField] private GameObject _currentVehicle;
     [SerializeField] private string _currentTrack = LevelNameConstants.RaceTrack;
     [SerializeField] private string _currentGameMode = GameModeConstants.FreeRide;
-    [SerializeField] private GameObject MainGaugesCanvas;
+    private int _fuelMultiplier = 1;
+
+    // [SerializeField] private GameObject MainGaugesCanvas;
 
     private LevelLoader _levelLoader;
 
     public GameObject SelectedVehicle => this._currentVehicle;
     public string SelectedTrack => this._currentTrack;
+    public int FuelMultiplier => this._fuelMultiplier;
 
     private void Awake()
     {
@@ -44,6 +48,11 @@ public class Global : MonoBehaviour
         this._currentTrack = track;
     }
 
+    public void SetFuelSetting(int newFuelSetting)
+    {
+        this._fuelMultiplier = newFuelSetting;
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         this.InstantiatePlayerVehicle();
@@ -54,7 +63,7 @@ public class Global : MonoBehaviour
         if (this._levelLoader.IsCurrentSceneGameplay())
         {
             Instantiate(this._currentVehicle, new Vector3(6, 0, 0), Quaternion.identity);
-            Instantiate(this.MainGaugesCanvas);
+            // Instantiate(this.MainGaugesCanvas);
         }
     }
 }

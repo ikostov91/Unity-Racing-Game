@@ -5,7 +5,7 @@ namespace Assets.Scripts
 {
     public class RallyEngine : MonoBehaviour, IEngine
     {
-        public int MinimumRpm => 800;
+        public int MinimumRpm => 2000;
         public int MaximumRmp => 8000;
         public int RedLine => 7200;
         public int UpShiftRpm => 6800;
