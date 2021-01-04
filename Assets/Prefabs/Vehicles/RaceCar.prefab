@@ -333,7 +333,6 @@ GameObject:
   - component: {fileID: 2201545481886376137}
   - component: {fileID: 1803635088472483208}
   - component: {fileID: 9077632348924421194}
-  - component: {fileID: 1909073269}
   - component: {fileID: 1616784857}
   - component: {fileID: 1663132807}
   - component: {fileID: 565833649}
@@ -341,11 +340,12 @@ GameObject:
   - component: {fileID: 2774867824998537447}
   - component: {fileID: 618621183}
   - component: {fileID: 1542394531}
-  - component: {fileID: 2117242907}
   - component: {fileID: 7438994962476799910}
   - component: {fileID: 2835834248523237174}
   - component: {fileID: 9150966170196114844}
   - component: {fileID: 8447622924731066736}
+  - component: {fileID: 5624362206650626781}
+  - component: {fileID: 2640674196061819495}
   m_Layer: 0
   m_Name: RaceCar
   m_TagString: Untagged
@@ -428,21 +428,6 @@ MonoBehaviour:
   _lockedBrakesSidewaysFriction: 0.8
   _lockedHandBrakeSidewaysFriction: 1
   _offTrackFriction: 0.6
---- !u!114 &1909073269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1569123347860847219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33a8cfa28165acd4780306587bae0707, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _exhaust: {fileID: 2916302568157334810}
-  _exhaustRateMin: 100
-  _exhaustRateMax: 1500
 --- !u!114 &1616784857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -553,18 +538,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6047bd298a67a584386e492d50fde0bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2117242907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1569123347860847219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b06b61a814bd1a4ba8786c798164d4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7438994962476799910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -620,6 +593,30 @@ MonoBehaviour:
   _depletionRate: 20
   _rechargeRate: 20
   _minimumActiveAmount: 80
+--- !u!114 &5624362206650626781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569123347860847219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b06b61a814bd1a4ba8786c798164d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2640674196061819495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569123347860847219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a266604f02294c92171d2460a4414, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1581963242552742617
 GameObject:
   m_ObjectHideFlags: 0

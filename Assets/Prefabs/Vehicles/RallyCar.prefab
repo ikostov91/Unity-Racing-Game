@@ -825,7 +825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33a8cfa28165acd4780306587bae0707, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _exhaust: {fileID: 0}
+  _exhaust: {fileID: 1959179537535378021}
   _exhaustRateMin: 100
   _exhaustRateMax: 500
 --- !u!1 &5102049116753889259

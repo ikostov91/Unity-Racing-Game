@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.PlayerInput;
 using UnityEngine;
 
+[RequireComponent(typeof(IInput))]
 public class FuelController : MonoBehaviour
 {
     private Global _global;

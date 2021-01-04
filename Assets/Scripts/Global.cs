@@ -1,4 +1,7 @@
-﻿using Constants;
+﻿using Assets.Scripts.PlayerInput;
+using Constants;
+using GameInput;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,14 +12,14 @@ public class Global : MonoBehaviour
     [SerializeField] private string _currentTrack = LevelNameConstants.RaceTrack;
     [SerializeField] private string _currentGameMode = GameModeConstants.FreeRide;
     private int _fuelMultiplier = 1;
-
-    // [SerializeField] private GameObject MainGaugesCanvas;
+    private InputTypes _inputType = InputTypes.Keyboard;
 
     private LevelLoader _levelLoader;
 
     public GameObject SelectedVehicle => this._currentVehicle;
     public string SelectedTrack => this._currentTrack;
     public int FuelMultiplier => this._fuelMultiplier;
+    public InputTypes InputType => this._inputType;
 
     private void Awake()
     {
@@ -53,6 +56,11 @@ public class Global : MonoBehaviour
         this._fuelMultiplier = newFuelSetting;
     }
 
+    public void SetInputType(InputTypes newInputType)
+    {
+        this._inputType = newInputType;
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         this.InstantiatePlayerVehicle();
@@ -62,8 +70,7 @@ public class Global : MonoBehaviour
     {
         if (this._levelLoader.IsCurrentSceneGameplay())
         {
-            Instantiate(this._currentVehicle, new Vector3(6, 0, 0), Quaternion.identity);
-            // Instantiate(this.MainGaugesCanvas);
+            GameObject playerVehicle = Instantiate(this._currentVehicle, new Vector3(6, 0, 0), Quaternion.identity);
         }
     }
 }

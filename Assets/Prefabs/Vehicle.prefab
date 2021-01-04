@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 3385980393619432747}
   - component: {fileID: 3385980393619432745}
   - component: {fileID: 3385980393619432744}
+  - component: {fileID: 653772447537566529}
   m_Layer: 0
   m_Name: Vehicle
   m_TagString: Untagged
@@ -177,65 +178,29 @@ MonoBehaviour:
   _maxSteeringAngle: 35
   _maxBrakingTorque: 2000
   _handbrakeTorque: 10000
+  _steerSpeed: 0.204
+  _speedThreshold: 10
   _axleInfos:
   - LeftWheel: {fileID: 3385980392245353474}
     RightWheel: {fileID: 3385980391825750391}
     Motor: 0
     Steering: 1
+    HandBrake: 0
     BrakeBias: 0.75
+    TorqueBias: 0
   - LeftWheel: {fileID: 3385980393181348032}
     RightWheel: {fileID: 3385980392830744891}
     Motor: 1
     Steering: 0
+    HandBrake: 0
     BrakeBias: 0.25
-  Engine:
-    MinimumRpm: 800
-    MaximumRmp: 6500
-    Inertia: 0.66875
-    Friction: 0.01
-  Gearbox:
-    NumberOfGears: 5
-    LowestGear: 0
-    HighestGear: 5
-    KPD: 0.96
-    FinalDriveRatio: 2.93
-    ReverseRatio: 3.89
-  _engineRevsDisplay: {fileID: 0}
-  _revCounterDisplay: {fileID: 0}
-  _gearDisplay: {fileID: 0}
+    TorqueBias: 0
   _centerOfMass: {fileID: 1466400978}
-  _downforce: 0.5
-  _steerSpeed: 0.204
-  _shiftUpTime: 0.5
-  _shiftDownTime: 0.1
-  _speed: 0
-  _leftWheelRpm: {fileID: 0}
-  _rightWheelRpm: {fileID: 0}
-  _torqueToWheel: 1000
-  turnInputCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -1
-      value: -1
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  _defaultSidewaysFriction: 1.4
+  _defaultForwardFriction: 1.4
+  _lockedBrakesSidewaysFriction: 0.8
+  _lockedHandBrakeSidewaysFriction: 0.8
+  _offTrackFriction: 0.3
 --- !u!54 &3385980393619432744
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -252,6 +217,36 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &653772447537566529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3385980393619432746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: 0}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: 
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &4273591131715432308
 GameObject:
   m_ObjectHideFlags: 0

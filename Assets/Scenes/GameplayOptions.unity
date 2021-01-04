@@ -412,8 +412,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5017270857295906459, guid: cd29880685927d641b70a2d97826388c, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd29880685927d641b70a2d97826388c, type: 3}
 --- !u!1 &1736811077
 GameObject:
@@ -956,6 +955,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3768371489128914933, guid: ed12e06afc6c9904b88cca8d9ec061f3,
+        type: 3}
+      propertyPath: m_Options.m_Options.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3768371489128914933, guid: ed12e06afc6c9904b88cca8d9ec061f3,
+        type: 3}
+      propertyPath: m_Options.m_Options.Array.data[2].m_Text
+      value: Drift Car
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed12e06afc6c9904b88cca8d9ec061f3, type: 3}

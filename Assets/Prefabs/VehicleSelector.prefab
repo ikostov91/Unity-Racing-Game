@@ -48,6 +48,7 @@ MonoBehaviour:
   _allVehicles:
   - {fileID: 1569123347860847219, guid: f19fc9fc8eee64346aae1627d3e0adfd, type: 3}
   - {fileID: 4836166447769857590, guid: 8e70c0fee62546e448ecf87b0754f88c, type: 3}
+  - {fileID: 8871220049364269775, guid: a2743705ae5b67a4e97068cb9272a2fe, type: 3}
   _vehicleIndex: 0
   _vehicleSelectDropdown: {fileID: 0}
 --- !u!1001 &739346556955638992

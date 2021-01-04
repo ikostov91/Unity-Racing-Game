@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using Input = UnityEngine.Input;
+﻿using Assets.Scripts.PlayerInput;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.PlayerInput
 {
-    public class KeyboardInput : MonoBehaviour, IInput
+    public class XboxGamepadInput : MonoBehaviour, IInput
     {
         public float Throttle { get => this._throttle; }
         public float Brake { get => this._brake; }
@@ -22,7 +23,6 @@ namespace Assets.Scripts.PlayerInput
         private bool _gearDown = false;
         private bool _handbrake = false;
         private bool _boost = false;
-        AnimationCurve _turnInputCurve = AnimationCurve.Linear(-1.0f, -1.0f, 1.0f, 1.0f);
 
         void Update()
         {
@@ -41,46 +41,50 @@ namespace Assets.Scripts.PlayerInput
 
         private void ProcessThrottle()
         {
-            bool input = Input.GetKey(KeyCode.UpArrow);
-            this._throttle = input == true ? 1 : 0;
+            float input = Gamepad.current.rightTrigger.ReadValue();
+            this._throttle = input;
         }
 
         private void ProcessBrake()
         {
-            bool input = Input.GetKey(KeyCode.DownArrow);
-            this._brake = input == true ? 1 : 0;
+            float input = Gamepad.current.leftTrigger.ReadValue();
+            this._brake = input;
         }
 
         private void ProcessSteering()
         {
-            float input = Input.GetAxis("Horizontal");
-            this._steering = this._turnInputCurve.Evaluate(input);
+            float input = Gamepad.current.leftStick.x.ReadValue();
+            this._steering = input;
         }
 
         private void ProcessGearUp()
         {
-            this._gearUp = Input.GetKeyDown(KeyCode.S);
+            bool input = Gamepad.current.buttonSouth.wasPressedThisFrame;
+            this._gearUp = input;
         }
 
         private void ProcessGearDown()
         {
-            this._gearDown = Input.GetKeyDown(KeyCode.X);
+            bool input = Gamepad.current.buttonWest.wasPressedThisFrame;
+            this._gearDown = input;
         }
 
         private void ProcessHandbrake()
         {
-            this._handbrake = Input.GetKey(KeyCode.Space);
+            bool input = Gamepad.current.buttonEast.wasPressedThisFrame;
+            this._handbrake = input;
         }
 
         private void ProcessClutch()
         {
-            bool input = Input.GetKey(KeyCode.Z);
+            bool input = Gamepad.current.dpad.down.wasPressedThisFrame;
             this._clutch = input == true ? 0f : 1f;
         }
 
         private void ProcessBoost()
         {
-            this._boost = Input.GetKey(KeyCode.A);
+            bool input = Gamepad.current.buttonNorth.isPressed;
+            this._boost = input;
         }
     }
 }

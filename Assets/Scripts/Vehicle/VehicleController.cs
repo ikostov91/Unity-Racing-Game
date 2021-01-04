@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Assets.Scripts.PlayerInput;
+using GameInput;
 
 [RequireComponent(typeof(IInput))]
 [RequireComponent(typeof(Rigidbody))]
@@ -18,6 +19,8 @@ public class VehicleController : MonoBehaviour
     [SerializeField] private float _speedThreshold = 10f;
 
     private IInput _input;
+
+    private Global _global;
 
     private Rigidbody _rigidBody;
 
@@ -50,8 +53,11 @@ public class VehicleController : MonoBehaviour
 
     void Start()
     {
+        this._global = FindObjectOfType<Global>();
+
         this._rigidBody = GetComponent<Rigidbody>();
-        this._input = GetComponent<IInput>();
+
+        this.SetupInput();
 
         this.Gearbox = GetComponent<IGearbox>();
 
@@ -84,6 +90,39 @@ public class VehicleController : MonoBehaviour
     {
         this.GetTransmissionTorque();
         this.GetCurrentSpeed();
+    }
+
+    private void SetupInput()
+    {
+        var input = this._global.InputType;
+        switch (input)
+        {
+            case InputTypes.Keyboard:
+                this._input = GetComponents<IInput>().First(x => x is KeyboardInput);
+                break;
+            case InputTypes.XboxPad:
+                this._input = GetComponents<IInput>().First(x => x is XboxGamepadInput);
+                break;
+            default:
+                this._input = GetComponents<IInput>().First(x => x is KeyboardInput);
+                break;
+        }
+    }
+
+    public void ChangeInputComponent(InputTypes inputType)
+    {
+        switch (inputType)
+        {
+            case InputTypes.Keyboard:
+                this._input = GetComponents<IInput>().First(x => x is KeyboardInput);
+                break;
+            case InputTypes.XboxPad:
+                this._input = GetComponents<IInput>().First(x => x is XboxGamepadInput);
+                break;
+            default:
+                this._input = GetComponents<IInput>().First(x => x is KeyboardInput);
+                break;
+        }
     }
 
     private void ApplyDriveTorque()
