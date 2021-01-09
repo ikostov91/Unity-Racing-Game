@@ -10,7 +10,7 @@ namespace Assets.Scripts
         public int RedLine => 8500;
         public int UpShiftRpm => 8200;
         public int DownShiftRpm => 4500;
-        public float Inertia => 0.66875f;
+        public float Inertia => 0.76875f;
         public float Friction => 0.01f;
         public Dictionary<int, float> TorqueCurve => new Dictionary<int, float>()
         {
