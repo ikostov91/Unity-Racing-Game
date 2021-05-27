@@ -1,3 +1,5 @@
-Car racing game made with Unity and some free assets for the car/track models.
+Car racing game made with Unity.
+
+Assets used: https://www.kenney.nl/
 
 Work in progress.
